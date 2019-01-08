@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mytunesassigment.gui.controller.PopupCategoryController">
+   <children>
+      <Label fx:id="specificFunctionLabel" layoutX="235.0" layoutY="14.0" text="Submit Rating" />
+      <Button layoutX="422.0" layoutY="238.0" mnemonicParsing="false" onAction="#goBack" text="Cancel" />
+      <Label layoutX="104.0" layoutY="102.0" text="Movie name :" />
+      <Label layoutX="104.0" layoutY="145.0" text="Your Rating :" />
+      <Label fx:id="errorLabel" layoutX="120.0" layoutY="56.0" />
+      <Button layoutX="422.0" layoutY="141.0" mnemonicParsing="false" onAction="#submitRating" text="Submit" />
+      <Label fx:id="movieName" layoutX="207.0" layoutY="102.0" text="Movie Name" />
+      <TextField fx:id="ratingBox" layoutX="198.0" layoutY="141.0" promptText="Type your rating" text="None" />
+   </children>
+</AnchorPane>
