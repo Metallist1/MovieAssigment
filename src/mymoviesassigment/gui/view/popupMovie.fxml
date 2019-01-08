@@ -5,7 +5,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mytunesassigment.gui.controller.PopupSongController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mymoviesassigment.gui.controller.PopupMovieController">
    <children>
       <Label fx:id="specificFunctionLabel" layoutX="235.0" layoutY="14.0" text="Create / Edit Movie" />
       <TextField fx:id="nameField" layoutX="202.0" layoutY="99.0" promptText="Insert Name" />

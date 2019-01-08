@@ -10,13 +10,13 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane id="AnchorPane" prefHeight="448.0" prefWidth="849.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mytunesassigment.gui.controller.PlaylistController">
+<AnchorPane id="AnchorPane" prefHeight="448.0" prefWidth="849.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mymoviesassigment.gui.controller.MainWindowController">
    <children>
       <VBox layoutX="14.0" layoutY="11.0" prefHeight="62.0" prefWidth="168.0">
          <children>
             <HBox prefHeight="38.0" prefWidth="158.0">
                <children>
-                  <Button fx:id="playButton" mnemonicParsing="false" onAction="#playSong" text="Play Movie" />
+                  <Button fx:id="playButton" mnemonicParsing="false" onAction="#playMovie" text="Play Movie" />
                   <Button fx:id="rateMovie" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#rateMovie" text="Rate Movie">
                      <HBox.margin>
                         <Insets left="15.0" />
@@ -38,21 +38,21 @@
                   <Label text="Categories" />
                   <TableView fx:id="playlistTableView" onMouseClicked="#displaySongsInPlaylist" prefHeight="254.0" prefWidth="279.0">
                     <columns>
-                      <TableColumn fx:id="playlistSongNames" prefWidth="75.0" text="Name" />
-                      <TableColumn fx:id="playlistSongTotalCount" prefWidth="75.0" text="Total Movies" />
+                      <TableColumn fx:id="CategoryNames" prefWidth="75.0" text="Name" />
+                      <TableColumn fx:id="totalMovieCount" prefWidth="75.0" text="Total Movies" />
                     </columns>
                   </TableView>
                   <HBox prefHeight="38.0" prefWidth="124.0">
                      <children>
-                        <Button mnemonicParsing="false" onAction="#createPlaylist" text="New">
+                        <Button mnemonicParsing="false" onAction="#createCategory" text="New">
                            <HBox.margin>
                               <Insets />
                            </HBox.margin></Button>
-                        <Button mnemonicParsing="false" onAction="#editPlaylist" text="Edit">
+                        <Button mnemonicParsing="false" onAction="#editCategory" text="Edit">
                            <HBox.margin>
                               <Insets left="15.0" />
                            </HBox.margin></Button>
-                        <Button mnemonicParsing="false" onAction="#deletePlaylist" text="Delete">
+                        <Button mnemonicParsing="false" onAction="#deleteCategory" text="Delete">
                            <HBox.margin>
                               <Insets left="15.0" />
                            </HBox.margin></Button>
@@ -68,21 +68,21 @@
                   <Label text="Movies in category" />
                   <TableView fx:id="songsInPlaylist" prefHeight="303.0" prefWidth="146.0">
                     <columns>
-                      <TableColumn fx:id="songInPlaylistID" prefWidth="31.200012981891632" text="ID" />
-                      <TableColumn fx:id="songsInPlaylistName" prefWidth="119.20000839233398" text="Movie Name" />
+                      <TableColumn fx:id="CatId" prefWidth="31.200012981891632" text="ID" />
+                      <TableColumn fx:id="CatMovieName" prefWidth="119.20000839233398" text="Movie Name" />
                     </columns>
                   </TableView>
                   <HBox prefHeight="100.0" prefWidth="200.0">
                      <children>
-                        <Button mnemonicParsing="false" onAction="#moveSongDown" text="/\">
+                        <Button mnemonicParsing="false" onAction="#moveMovieUp" text="/\">
                            <HBox.margin>
                               <Insets />
                            </HBox.margin></Button>
-                        <Button mnemonicParsing="false" onAction="#moveSongUp" text="\\/">
+                        <Button mnemonicParsing="false" onAction="#moveMovieDown" text="\\/">
                            <HBox.margin>
                               <Insets left="15.0" />
                            </HBox.margin></Button>
-                        <Button mnemonicParsing="false" onAction="#removeSong" text="Remove">
+                        <Button mnemonicParsing="false" onAction="#removeMovie" text="Remove">
                            <HBox.margin>
                               <Insets left="15.0" />
                            </HBox.margin></Button>
@@ -93,7 +93,7 @@
                   <Insets right="15.0" />
                </HBox.margin>
             </VBox>
-            <Button mnemonicParsing="false" onAction="#addSong" text="&lt;">
+            <Button mnemonicParsing="false" onAction="#addMovie" text="&lt;">
                <HBox.margin>
                   <Insets right="15.0" />
                </HBox.margin>
@@ -104,8 +104,8 @@
                   <TableView fx:id="tableViewSongs" prefHeight="302.0" prefWidth="330.0">
                     <columns>
                       <TableColumn fx:id="nameColumn" prefWidth="75.0" text="Name" />
-                      <TableColumn fx:id="artistColumn" prefWidth="75.0" text="IMDB rating" />
-                        <TableColumn fx:id="categoryColumn" prefWidth="75.0" text="User Rating" />
+                      <TableColumn fx:id="imdbRating" prefWidth="75.0" text="IMDB rating" />
+                        <TableColumn fx:id="userRating" prefWidth="75.0" text="User Rating" />
                         <TableColumn fx:id="timeColumn" prefWidth="75.0" text="Last viewed" />
                     </columns>
                   </TableView>
@@ -113,15 +113,15 @@
                      <children>
                         <HBox prefHeight="66.0" prefWidth="321.0">
                            <children>
-                              <Button mnemonicParsing="false" onAction="#createSong" text="New">
+                              <Button mnemonicParsing="false" onAction="#createMovie" text="New">
                                  <HBox.margin>
                                     <Insets />
                                  </HBox.margin></Button>
-                              <Button mnemonicParsing="false" onAction="#editSong" text="Edit">
+                              <Button mnemonicParsing="false" onAction="#editMovie" text="Edit">
                                  <HBox.margin>
                                     <Insets left="15.0" />
                                  </HBox.margin></Button>
-                              <Button mnemonicParsing="false" onAction="#deleteSong" text="Delete">
+                              <Button mnemonicParsing="false" onAction="#deleteMovie" text="Delete">
                                  <HBox.margin>
                                     <Insets left="15.0" />
                                  </HBox.margin></Button>
