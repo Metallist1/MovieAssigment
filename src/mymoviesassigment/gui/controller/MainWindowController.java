@@ -7,6 +7,7 @@ package mymoviesassigment.gui.controller;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -14,8 +15,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import mymoviesassigment.be.Category;
+import mymoviesassigment.be.Movie;
 import mymoviesassigment.gui.model.CategoryModel;
 import mymoviesassigment.gui.model.MovieModel;
 
@@ -33,12 +37,6 @@ public class MainWindowController implements Initializable {
     @FXML
     private TextField searchTextBox;
     @FXML
-    private TableView<?> playlistTableView;
-    @FXML
-    private TableView<?> songsInPlaylist;
-    @FXML
-    private TableView<?> tableViewSongs;
-    @FXML
     private TableColumn<?, ?> nameColumn;
     @FXML
     private TableColumn<?, ?> timeColumn;
@@ -54,6 +52,15 @@ public class MainWindowController implements Initializable {
     private TableColumn<?, ?> imdbRating;
     @FXML
     private TableColumn<?, ?> userRating;
+    @FXML
+    private TableView<?> categoryTableView;
+    @FXML
+    private TableView<?> moviesInCategory;
+    @FXML
+    private TableView<Movie> movieTableView;
+
+    private ObservableList<Movie> observableListMovie;
+    private ObservableList<Category> observableListCategory;
 
     /**
      * Initializes the controller class.
@@ -62,10 +69,25 @@ public class MainWindowController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         CategoryModel categoryModel = CategoryModel.getInstance();
         MovieModel movieModel = MovieModel.getInstance();
-        categoryModel.getAllCategories(); //Loads all categories
-        movieModel.getAllMovies(); //Loads all movies
-    }    
+        observableListMovie = movieModel.getAllMovies(); //Loads all movies
+        //observableListCategory = categoryModel.getAllCategories(); //Loads all categories
+movieTableView.setItems(observableListMovie);
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        imdbRating.setCellValueFactory(new PropertyValueFactory<>("userRating"));
+        userRating.setCellValueFactory(new PropertyValueFactory<>("imdbRating"));
+        timeColumn.setCellValueFactory(new PropertyValueFactory<>("lastView"));
 
+        /*
+        tableViewSongs.setItems(observableListSong);
+        playlistSongNames.setCellValueFactory(new PropertyValueFactory<>("name"));
+        playlistSongTotalCount.setCellValueFactory(new PropertyValueFactory<>("songCount"));
+        playlistSongTotalTime.setCellValueFactory(new PropertyValueFactory<>("totalTimeString"));
+
+        playlistTableView.setItems(observableListPlay);
+        songsInPlaylistName.setCellValueFactory(new PropertyValueFactory<>("title"));
+        songInPlaylistID.setCellValueFactory(new PropertyValueFactory<>("IDinsideList"));
+         */
+    }
 
     @FXML
     private void rateMovie(ActionEvent event) {
@@ -122,5 +144,5 @@ public class MainWindowController implements Initializable {
     @FXML
     private void deleteMovie(ActionEvent event) {
     }
-    
+
 }

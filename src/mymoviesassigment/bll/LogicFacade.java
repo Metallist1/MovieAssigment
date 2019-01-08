@@ -6,6 +6,8 @@
 package mymoviesassigment.bll;
 
 import java.util.List;
+import mymoviesassigment.be.Category;
+import mymoviesassigment.be.Movie;
 
 
 /**
@@ -14,14 +16,14 @@ import java.util.List;
  */
 public interface LogicFacade {
 
-    public List<String> getAllCategories();
+    public List<Category> getAllCategories();
 
     /*
     Gets a list of all Movies
      */
     //public List<Movie> getAllMovies();
 
-    public List<String> getAllMovies();
+    public List<Movie> getAllMovies();
 
 }
 

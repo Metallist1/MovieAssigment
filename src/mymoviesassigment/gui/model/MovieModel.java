@@ -6,7 +6,9 @@
 package mymoviesassigment.gui.model;
 
 import java.io.IOException;
-import java.util.List;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import mymoviesassigment.be.Movie;
 import mymoviesassigment.bll.LogicFacade;
 import mymoviesassigment.bll.Manager;
 
@@ -15,8 +17,10 @@ import mymoviesassigment.bll.Manager;
  * @author nedas
  */
 public class MovieModel {
+
     private static final MovieModel MovieSingleton = new MovieModel();
     private final LogicFacade logiclayer;
+    private ObservableList<Movie> allMovies;
 
     /*
     Initialises the logic layer manager
@@ -38,7 +42,9 @@ public class MovieModel {
     /*
     Gets all categories from database and then returns a string list of all categories
      */
-    public List<String> getAllMovies() {
-        return logiclayer.getAllMovies();
+    public ObservableList<Movie> getAllMovies() {
+        allMovies = FXCollections.observableArrayList();
+        allMovies.addAll(logiclayer.getAllMovies());
+        return allMovies;
     }
 }

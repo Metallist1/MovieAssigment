@@ -5,10 +5,17 @@
  */
 package mymoviesassigment.dal;
 
+import java.util.List;
+import mymoviesassigment.be.Category;
+
 /**
  *
  * @author nedas
  */
 public class CategoryDAO {
+
+    public List<Category> getAllCategories() {
+        return null;
+    }
     
 }

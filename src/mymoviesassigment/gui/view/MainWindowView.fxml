@@ -36,7 +36,7 @@
             <VBox prefHeight="322.0" prefWidth="185.0">
                <children>
                   <Label text="Categories" />
-                  <TableView fx:id="playlistTableView" onMouseClicked="#displaySongsInPlaylist" prefHeight="254.0" prefWidth="279.0">
+                  <TableView fx:id="categoryTableView" onMouseClicked="#displaySongsInPlaylist" prefHeight="254.0" prefWidth="279.0">
                     <columns>
                       <TableColumn fx:id="CategoryNames" prefWidth="75.0" text="Name" />
                       <TableColumn fx:id="totalMovieCount" prefWidth="75.0" text="Total Movies" />
@@ -66,7 +66,7 @@
             <VBox prefHeight="322.0" prefWidth="184.0">
                <children>
                   <Label text="Movies in category" />
-                  <TableView fx:id="songsInPlaylist" prefHeight="303.0" prefWidth="146.0">
+                  <TableView fx:id="moviesInCategory" prefHeight="303.0" prefWidth="146.0">
                     <columns>
                       <TableColumn fx:id="CatId" prefWidth="31.200012981891632" text="ID" />
                       <TableColumn fx:id="CatMovieName" prefWidth="119.20000839233398" text="Movie Name" />
@@ -101,7 +101,7 @@
             <VBox prefHeight="322.0" prefWidth="329.0">
                <children>
                   <Label text="Movies" />
-                  <TableView fx:id="tableViewSongs" prefHeight="302.0" prefWidth="330.0">
+                  <TableView fx:id="movieTableView" prefHeight="302.0" prefWidth="330.0">
                     <columns>
                       <TableColumn fx:id="nameColumn" prefWidth="75.0" text="Name" />
                       <TableColumn fx:id="imdbRating" prefWidth="75.0" text="IMDB rating" />

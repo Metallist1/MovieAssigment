@@ -7,6 +7,9 @@ package mymoviesassigment.bll;
 
 import java.io.IOException;
 import java.util.List;
+import mymoviesassigment.be.Category;
+import mymoviesassigment.be.Movie;
+import mymoviesassigment.dal.CategoryDAO;
 import mymoviesassigment.dal.MovieDAO;
 /**
  *
@@ -15,12 +18,14 @@ import mymoviesassigment.dal.MovieDAO;
 public class Manager implements LogicFacade {
 
     private final MovieDAO movieDAO;
+    private final CategoryDAO categoryDAO;
 
     /*
     Initialises all classes in DAL
      */
     public Manager() throws IOException {
         movieDAO = new MovieDAO();
+        categoryDAO = new CategoryDAO();
     }
 
     /*@Override
@@ -29,13 +34,13 @@ public class Manager implements LogicFacade {
     }*/
 
     @Override
-    public List<String> getAllCategories() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<Category> getAllCategories() {
+        return categoryDAO.getAllCategories();
     }
 
     @Override
-    public List<String> getAllMovies() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<Movie> getAllMovies() {
+        return movieDAO.getAllMovies();
     }
 
 }

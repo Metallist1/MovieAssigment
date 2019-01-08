@@ -3,14 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package mytunesassigment.dal;
+package mymoviesassigment.dal;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.InputStream;
+import java.util.Properties;
+import java.util.Set;
 
 /**
  *
@@ -18,26 +16,37 @@ import java.util.List;
  */
 public class DatabaseConnectionDAO {
 
-    /*
-    Gets database information from file. Adds it to an array to be sent to all DAO classes so database connection could be easily possible 
-     */
-    public List<String> getDatabaseInfo() throws IOException {
-        List<String> info = new ArrayList();
-        String source = "data/loginDetails.txt";
-        File file = new File(source);
+    private final Properties configProp = new Properties();
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                if (!line.isEmpty()) {
-                    try {
-                        info.add(line);
-                    } catch (Exception ex) {
-                        System.out.println(ex);
-                    }
-                }
-            }
+    private DatabaseConnectionDAO() {
+        //Private constructor to restrict new instances
+        InputStream in = this.getClass().getClassLoader().getResourceAsStream("data/loginInfo.properties");
+        System.out.println("Read all database data");
+        try {
+            configProp.load(in);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        return info;
+    }
+
+    //Bill Pugh Solution for singleton pattern
+    private static class LazyHolder {
+        private static final DatabaseConnectionDAO INSTANCE = new DatabaseConnectionDAO();
+    }
+
+    public static DatabaseConnectionDAO getInstance() {
+        return LazyHolder.INSTANCE;
+    }
+
+    public String getProperty(String key) {
+        return configProp.getProperty(key);
+    }
+
+    public Set<String> getAllPropertyNames() {
+        return configProp.stringPropertyNames();
+    }
+
+    public boolean containsKey(String key) {
+        return configProp.containsKey(key);
     }
 }
