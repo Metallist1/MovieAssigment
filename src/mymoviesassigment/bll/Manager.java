@@ -11,6 +11,7 @@ import mymoviesassigment.be.Category;
 import mymoviesassigment.be.Movie;
 import mymoviesassigment.dal.CategoryDAO;
 import mymoviesassigment.dal.MovieDAO;
+
 /**
  *
  * @author nedas
@@ -32,7 +33,6 @@ public class Manager implements LogicFacade {
     public List<Movie> getAllMovies() {
         return MovieDAO.getAllMovies();
     }*/
-
     @Override
     public List<Category> getAllCategories() {
         return categoryDAO.getAllCategories();
@@ -41,6 +41,21 @@ public class Manager implements LogicFacade {
     @Override
     public List<Movie> getAllMovies() {
         return movieDAO.getAllMovies();
+    }
+
+    @Override
+    public Movie createMovie(String name, int rating, int imdbrating, String url) {
+        return movieDAO.createMovie(name, rating, imdbrating, url);
+    }
+
+    @Override
+    public Movie updateMovie(Movie movieToEdit, String name, int rating, int imdbrating, String url) {
+        return movieDAO.updateMovie(movieToEdit, name, rating, imdbrating, url);
+    }
+
+    @Override
+    public void deleteMovie(Movie selectedItem) {
+        movieDAO.removeMovie(selectedItem);
     }
 
 }

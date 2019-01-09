@@ -5,12 +5,16 @@
  */
 package mymoviesassigment.gui.controller;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -18,6 +22,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 import mymoviesassigment.be.Category;
 import mymoviesassigment.be.Movie;
 import mymoviesassigment.gui.model.CategoryModel;
@@ -53,7 +58,7 @@ public class MainWindowController implements Initializable {
     @FXML
     private TableColumn<?, ?> userRating;
     @FXML
-    private TableView<?> categoryTableView;
+    private TableView<Category> categoryTableView;
     @FXML
     private TableView<?> moviesInCategory;
     @FXML
@@ -61,17 +66,19 @@ public class MainWindowController implements Initializable {
 
     private ObservableList<Movie> observableListMovie;
     private ObservableList<Category> observableListCategory;
+    private CategoryModel categoryModel;
+    private MovieModel movieModel;
 
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        CategoryModel categoryModel = CategoryModel.getInstance();
-        MovieModel movieModel = MovieModel.getInstance();
+        categoryModel = CategoryModel.getInstance();
+        movieModel = MovieModel.getInstance();
         observableListMovie = movieModel.getAllMovies(); //Loads all movies
         //observableListCategory = categoryModel.getAllCategories(); //Loads all categories
-movieTableView.setItems(observableListMovie);
+        movieTableView.setItems(observableListMovie);
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         imdbRating.setCellValueFactory(new PropertyValueFactory<>("userRating"));
         userRating.setCellValueFactory(new PropertyValueFactory<>("imdbRating"));
@@ -106,11 +113,13 @@ movieTableView.setItems(observableListMovie);
     }
 
     @FXML
-    private void createCategory(ActionEvent event) {
+    private void createCategory(ActionEvent event) throws IOException {
+        setUpScenes(1, false);
     }
 
     @FXML
-    private void editCategory(ActionEvent event) {
+    private void editCategory(ActionEvent event) throws IOException {
+        setUpScenes(1, true);
     }
 
     @FXML
@@ -134,15 +143,54 @@ movieTableView.setItems(observableListMovie);
     }
 
     @FXML
-    private void createMovie(ActionEvent event) {
+    private void createMovie(ActionEvent event) throws IOException {
+        setUpScenes(2, false);
     }
 
     @FXML
-    private void editMovie(ActionEvent event) {
+    private void editMovie(ActionEvent event) throws IOException {
+        setUpScenes(2, true);
     }
 
     @FXML
     private void deleteMovie(ActionEvent event) {
+        if (movieTableView.getSelectionModel().getSelectedIndex() != -1) {
+            movieModel.deleteMovie(movieTableView.getSelectionModel().getSelectedItem(),movieTableView.getSelectionModel().getSelectedIndex()); // calls delete playlist from playlistModel
+            refreshMovieList(true);
+            
+        }
     }
 
+    private void setUpScenes(int whichScene, boolean isEditing) throws IOException {
+        Parent root1;
+        if (whichScene == 1) { //If the scene needed is playlist view
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/mymoviesassigment/gui/view/popupCategories.fxml"));
+            root1 = (Parent) fxmlLoader.load();
+            if (isEditing) {
+                fxmlLoader.<PopupCategoriesController>getController().setInfo(categoryTableView.getSelectionModel().getSelectedItem()); // Tells the playlist controller class that the method will be editing its name
+            }
+            fxmlLoader.<PopupCategoriesController>getController().setController(this); //Sets controler by default for both creating and editing playlists
+        } else { // If the scene needed is song view
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/mymoviesassigment/gui/view/popupMovie.fxml"));
+            root1 = (Parent) fxmlLoader.load();
+            if (isEditing) {
+                fxmlLoader.<PopupMovieController>getController().setInfo(movieTableView.getSelectionModel().getSelectedItem(), movieTableView.getSelectionModel().getFocusedIndex());// Tells the song controller class that the method will be editing song info
+            }
+            fxmlLoader.<PopupMovieController>getController().setController(this); //Sets controler by default for both creating and editing songs
+        }
+        Stage stage = new Stage();
+        stage.setScene(new Scene(root1, 800, 800));
+        stage.centerOnScreen();
+        stage.show();
+    }
+
+    void refreshMovieList(boolean editing) {
+        //movieTableView.getItems().clear();
+        observableListMovie = movieModel.getCurrentMovies();
+        movieTableView.setItems(observableListMovie);
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        imdbRating.setCellValueFactory(new PropertyValueFactory<>("userRating"));
+        userRating.setCellValueFactory(new PropertyValueFactory<>("imdbRating"));
+        timeColumn.setCellValueFactory(new PropertyValueFactory<>("lastView"));
+    }
 }

@@ -47,4 +47,23 @@ public class MovieModel {
         allMovies.addAll(logiclayer.getAllMovies());
         return allMovies;
     }
+
+    public ObservableList<Movie> getCurrentMovies() {
+        return allMovies;
+    }
+
+    public void createMovie(String name, int rating, int imdbrating, String url) {
+        Movie createdMovie = logiclayer.createMovie(name, rating, imdbrating, url);
+        allMovies.add(createdMovie);
+    }
+
+    public void updateMovie(Movie movieToEdit,int movieIndex, String name, int rating, int imdbrating, String url) {
+        Movie updatedMovie = logiclayer.updateMovie(movieToEdit, name, rating, imdbrating, url);
+        allMovies.set(movieIndex,updatedMovie);
+    }
+
+    public void deleteMovie(Movie selectedItem, int selectedIndex) {
+        logiclayer.deleteMovie(selectedItem);
+        allMovies.remove(selectedIndex);
+    }
 }

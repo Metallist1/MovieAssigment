@@ -25,5 +25,11 @@ public interface LogicFacade {
 
     public List<Movie> getAllMovies();
 
+    public Movie createMovie(String name, int rating, int imdbrating, String url);
+
+    public Movie updateMovie(Movie movieToEdit, String name, int rating, int imdbrating, String url);
+
+    public void deleteMovie(Movie selectedItem);
+
 }
 

@@ -17,13 +17,19 @@ public class Movie {
     private int imdbRating;
     private Date lastView;
     private String url;
+    private int ID;
 
-    public Movie(String name, int userRating, int imdbRating, Date lastView, String url) {
+    public Movie(String name, int userRating, int imdbRating, Date lastView, String url, int ID) {
         this.name = name;
         this.userRating = userRating;
         this.imdbRating = imdbRating;
         this.lastView = lastView;
         this.url = url;
+        this.ID = ID;
+    }
+
+    public int getID() {
+        return ID;
     }
 
     public String getName() {

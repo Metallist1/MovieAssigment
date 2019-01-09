@@ -12,6 +12,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
+import mymoviesassigment.be.Category;
 
 /**
  * FXML Controller class
@@ -33,7 +35,7 @@ public class PopupCategoriesController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
-    }    
+    }
 
     @FXML
     private void saveCategoryName(ActionEvent event) {
@@ -41,6 +43,16 @@ public class PopupCategoriesController implements Initializable {
 
     @FXML
     private void goBackFromCategory(ActionEvent event) {
+        Stage stage = (Stage) errorLabel.getScene().getWindow();
+        stage.close();
     }
-    
+
+    void setInfo(Category selectedItem) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    void setController(MainWindowController aThis) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }
