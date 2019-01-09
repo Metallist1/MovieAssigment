@@ -8,7 +8,6 @@ package mymoviesassigment.gui.controller;
 import java.io.File;
 import static java.lang.Math.toIntExact;
 import java.net.URL;
-import java.util.Date;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -20,7 +19,6 @@ import javafx.scene.media.MediaPlayer;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import mymoviesassigment.be.Movie;
-import mymoviesassigment.gui.model.CategoryModel;
 import mymoviesassigment.gui.model.MovieModel;
 
 /**
@@ -112,7 +110,7 @@ public class PopupMovieController implements Initializable {
             int minutes = Integer.parseInt(averageSeconds) / 60; //Gets minutes
             int seconds = Integer.parseInt(averageSeconds) % 60; // Gets seconds
             if (10 > seconds) { // If the value is under 10 seconds . Prevent from showing 0:x and turn into 0:0X 
-                timeField.setText(minutes + ":0" + seconds);
+                timeField.setText(minutes + ":0" + seconds);    
             } else {
                 timeField.setText(minutes + ":" + seconds);
             }

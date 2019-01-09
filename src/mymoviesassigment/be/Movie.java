@@ -17,7 +17,7 @@ public class Movie {
     private int imdbRating;
     private Date lastView;
     private String url;
-    private int ID;
+    private final int ID;
 
     public Movie(String name, int userRating, int imdbRating, Date lastView, String url, int ID) {
         this.name = name;
@@ -66,5 +66,9 @@ public class Movie {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public void setLastView(Date lastView) {
+        this.lastView = lastView;
     }
 }

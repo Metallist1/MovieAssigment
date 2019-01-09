@@ -31,5 +31,11 @@ public interface LogicFacade {
 
     public void deleteMovie(Movie selectedItem);
 
+    public Category createCategory(String name);
+
+    public Category updatedCategory(Category editingList, String name);
+
+    public void deleteCategory(Category selectedItem);
+
 }
 

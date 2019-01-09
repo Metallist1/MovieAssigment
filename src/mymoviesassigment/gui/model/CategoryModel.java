@@ -6,7 +6,6 @@
 package mymoviesassigment.gui.model;
 
 import java.io.IOException;
-import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import mymoviesassigment.be.Category;
@@ -49,4 +48,22 @@ public class CategoryModel {
         return allCategory;
     }
 
+    public ObservableList<Category> getCurrentCategories() {
+        return allCategory;
+    }
+
+    public void createPlaylist(String name) {
+        Category createdCategory = logiclayer.createCategory(name);
+        allCategory.add(createdCategory);
+    }
+
+    public void editPlaylist(Category editingList, int categoryIndex, String name) {
+        Category updatedCategory = logiclayer.updatedCategory(editingList, name);
+        allCategory.set(categoryIndex, updatedCategory);
+    }
+
+    public void deletePlaylist(Category selectedItem, int selectedIndex) {
+        logiclayer.deleteCategory(selectedItem);
+        allCategory.remove(selectedIndex);
+    }
 }

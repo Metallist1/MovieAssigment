@@ -58,4 +58,19 @@ public class Manager implements LogicFacade {
         movieDAO.removeMovie(selectedItem);
     }
 
+    @Override
+    public Category createCategory(String name) {
+         return categoryDAO.createCategory(name);
+    }
+
+    @Override
+    public Category updatedCategory(Category editingList, String name) {
+        return categoryDAO.updateCategory(editingList,name);
+    }
+
+    @Override
+    public void deleteCategory(Category selectedItem) {
+        categoryDAO.deleteCategory(selectedItem);
+    }
+
 }

@@ -36,7 +36,7 @@
             <VBox prefHeight="322.0" prefWidth="185.0">
                <children>
                   <Label text="Categories" />
-                  <TableView fx:id="categoryTableView" onMouseClicked="#displaySongsInPlaylist" prefHeight="254.0" prefWidth="279.0">
+                  <TableView fx:id="categoryTableView" onMouseClicked="#displayMoviesInCategory" prefHeight="254.0" prefWidth="279.0">
                     <columns>
                       <TableColumn fx:id="CategoryNames" prefWidth="75.0" text="Name" />
                       <TableColumn fx:id="totalMovieCount" prefWidth="75.0" text="Total Movies" />
