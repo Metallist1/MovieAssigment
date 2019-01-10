@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.List;
 import mymoviesassigment.be.Category;
 import mymoviesassigment.be.Movie;
+import mymoviesassigment.dal.CatDAO;
 import mymoviesassigment.dal.CategoryDAO;
 import mymoviesassigment.dal.MovieDAO;
 
@@ -20,6 +21,7 @@ public class Manager implements LogicFacade {
 
     private final MovieDAO movieDAO;
     private final CategoryDAO categoryDAO;
+    private final CatDAO catDAO;
 
     /*
     Initialises all classes in DAL
@@ -27,6 +29,7 @@ public class Manager implements LogicFacade {
     public Manager() throws IOException {
         movieDAO = new MovieDAO();
         categoryDAO = new CategoryDAO();
+        catDAO = new CatDAO();
     }
 
     /*@Override
@@ -60,17 +63,28 @@ public class Manager implements LogicFacade {
 
     @Override
     public Category createCategory(String name) {
-         return categoryDAO.createCategory(name);
+        return categoryDAO.createCategory(name);
     }
 
     @Override
     public Category updatedCategory(Category editingList, String name) {
-        return categoryDAO.updateCategory(editingList,name);
+        return categoryDAO.updateCategory(editingList, name);
     }
 
     @Override
     public void deleteCategory(Category selectedItem) {
+        catDAO.removeFromCat(selectedItem);
         categoryDAO.deleteCategory(selectedItem);
+    }
+
+    @Override
+    public void addToCategory(Category selectedItem, Movie selectedMovie) {
+        catDAO.addToCategory(selectedItem, selectedMovie);
+    }
+
+    @Override
+    public void removeFromCategory(Category selectedItem, Movie selectedMovie) {
+        catDAO.removeFromCategory(selectedItem, selectedMovie);
     }
 
 }

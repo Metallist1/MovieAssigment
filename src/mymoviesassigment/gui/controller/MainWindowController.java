@@ -5,6 +5,8 @@
  */
 package mymoviesassigment.gui.controller;
 
+import java.awt.Desktop;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
@@ -23,6 +25,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import javafx.stage.Stage;
 import mymoviesassigment.be.Category;
 import mymoviesassigment.be.Movie;
@@ -51,8 +56,6 @@ public class MainWindowController implements Initializable {
     @FXML
     private TableColumn<?, ?> totalMovieCount;
     @FXML
-    private TableColumn<?, ?> CatId;
-    @FXML
     private TableColumn<?, ?> CatMovieName;
     @FXML
     private TableColumn<?, ?> imdbRating;
@@ -69,6 +72,9 @@ public class MainWindowController implements Initializable {
     private ObservableList<Category> observableListCategory;
     private CategoryModel categoryModel;
     private MovieModel movieModel;
+
+    private MediaPlayer mediaPlayer;
+    private int currentSongPlaying = 0;
 
     /**
      * Initializes the controller class.
@@ -89,6 +95,8 @@ public class MainWindowController implements Initializable {
         categoryTableView.setItems(observableListCategory);
         CategoryNames.setCellValueFactory(new PropertyValueFactory<>("name"));
         totalMovieCount.setCellValueFactory(new PropertyValueFactory<>("movieCount"));
+
+        CatMovieName.setCellValueFactory(new PropertyValueFactory<>("name"));
     }
 
     @FXML
@@ -99,9 +107,13 @@ public class MainWindowController implements Initializable {
     private void search(KeyEvent event) {
     }
 
-
     @FXML
-    private void playMovie(ActionEvent event) {
+    private void playMovie(ActionEvent event) throws IOException {
+        play();
+    }
+
+    private void play() throws IOException {
+        Desktop.getDesktop().open(new File(moviesInCategory.getSelectionModel().getSelectedItem().getUrl()));
     }
 
     @FXML
@@ -126,19 +138,20 @@ public class MainWindowController implements Initializable {
     }
 
     @FXML
-    private void moveMovieUp(ActionEvent event) {
-    }
-
-    @FXML
-    private void moveMovieDown(ActionEvent event) {
-    }
-
-    @FXML
     private void removeMovie(ActionEvent event) {
+        if (moviesInCategory.getSelectionModel().getSelectedIndex() != -1 && categoryTableView.getSelectionModel().getSelectedIndex() != -1) {
+            System.out.println(moviesInCategory.getSelectionModel().getSelectedItem().getID());
+            categoryModel.removeMovieFromCategory(categoryTableView.getSelectionModel().getSelectedItem(), moviesInCategory.getSelectionModel().getSelectedItem(), moviesInCategory.getSelectionModel().getFocusedIndex());
+            refreshCatList();
+        }
     }
 
     @FXML
     private void addMovie(ActionEvent event) {
+        if (categoryTableView.getSelectionModel().getSelectedIndex() != -1 && movieTableView.getSelectionModel().getSelectedIndex() != -1) {
+            categoryModel.addToCategory(categoryTableView.getSelectionModel().getSelectedItem(), movieTableView.getSelectionModel().getSelectedItem());
+            refreshCatList();
+        }
     }
 
     @FXML
@@ -203,6 +216,15 @@ public class MainWindowController implements Initializable {
     @FXML
     private void displayMoviesInCategory(MouseEvent event) {
         moviesInCategory.getItems().clear();
+        List<Movie> toBeAddedMovieList = categoryTableView.getSelectionModel().getSelectedItem().getAllMoviesInCategory(); //Gets specific playlist song list
+        for (int x = toBeAddedMovieList.size() - 1; x >= 0; x--) { //counts down from the bottom to top so the last song to be added would play last.
+            moviesInCategory.getItems().add(toBeAddedMovieList.get(x)); //adds the song to the table
+        }
+    }
+
+    private void refreshCatList() {
+        moviesInCategory.getItems().clear();
+        refreshCategoryList();
         List<Movie> toBeAddedMovieList = categoryTableView.getSelectionModel().getSelectedItem().getAllMoviesInCategory(); //Gets specific playlist song list
         for (int x = toBeAddedMovieList.size() - 1; x >= 0; x--) { //counts down from the bottom to top so the last song to be added would play last.
             moviesInCategory.getItems().add(toBeAddedMovieList.get(x)); //adds the song to the table

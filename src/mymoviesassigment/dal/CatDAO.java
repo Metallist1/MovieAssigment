@@ -13,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import mymoviesassigment.be.Category;
 import mymoviesassigment.be.Movie;
 
 /**
@@ -38,7 +39,11 @@ public class CatDAO {
     public List<Movie> getCategoryMovie(int id) {
         List<Movie> newMovieList = new ArrayList();
         try (Connection con = ds.getConnection()) {
-            String query = "SELECT * FROM CatMovie INNER JOIN Movie ON CatMovie.MovieId = Movie.id WHERE CatMovie.CategoryId = ? "; // Gets all movies from a coresponding category.
+            String query = ""
+                    + "SELECT Movie.name , Movie.userRating , Movie.imdbRating , Movie.lastview , Movie.filelink , Movie.id FROM CatMovie "
+                    + "INNER JOIN Movie "
+                    + "ON CatMovie.MovieId = Movie.id "
+                    + "WHERE CatMovie.CategoryId = ? "; // Gets all movies from a coresponding category.
             PreparedStatement preparedStmt = con.prepareStatement(query);
             preparedStmt.setInt(1, id);
             ResultSet rs = preparedStmt.executeQuery();
@@ -55,4 +60,49 @@ public class CatDAO {
             return null;
         }
     }
+
+    public void addToCategory(Category selectedItem, Movie selectedMovie) {
+        String sql = "INSERT INTO CatMovie(CategoryId,MovieId) VALUES (?,?)";
+        try (Connection con = ds.getConnection()) {
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setInt(1, selectedItem.getID());
+            ps.setInt(2, selectedMovie.getID());
+            ps.addBatch();
+            ps.executeBatch();
+        } catch (SQLServerException ex) {
+            System.out.println(ex);
+        } catch (SQLException ex) {
+            System.out.println(ex);
+        }
+    }
+
+    public void removeFromCategory(Category selectedItem, Movie selectedMovie) {
+        try (Connection con = ds.getConnection()) {
+            System.out.println(selectedItem.getID() +" " + selectedMovie.getID());
+            String query = "DELETE from CatMovie WHERE CategoryId = ? AND MovieId = ?";
+            PreparedStatement preparedStmt = con.prepareStatement(query);
+            preparedStmt.setInt(1, selectedItem.getID());
+            preparedStmt.setInt(2, selectedMovie.getID());
+            preparedStmt.execute();
+        } catch (SQLServerException ex) {
+            System.out.println(ex);
+        } catch (SQLException ex) {
+            System.out.println(ex);
+        }
+    }
+
+
+    public void removeFromCat(Category selectedItem) {
+        try (Connection con = ds.getConnection()) {
+            String query = "DELETE from CatMovie WHERE CategoryId = ?";
+            PreparedStatement preparedStmt = con.prepareStatement(query);
+            preparedStmt.setInt(1, selectedItem.getID());
+            preparedStmt.execute();
+        } catch (SQLServerException ex) {
+            System.out.println(ex);
+        } catch (SQLException ex) {
+            System.out.println(ex);
+        }
+    }
+
 }

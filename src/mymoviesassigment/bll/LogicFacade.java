@@ -37,5 +37,9 @@ public interface LogicFacade {
 
     public void deleteCategory(Category selectedItem);
 
+    public void addToCategory(Category selectedItem, Movie selectedMovie);
+
+    public void removeFromCategory(Category selectedItem, Movie selectedMovie);
+
 }
 

@@ -5,9 +5,7 @@
  */
 package mymoviesassigment.gui.controller;
 
-import java.io.IOException;
 import java.net.URL;
-import java.util.List;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -17,7 +15,6 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import mymoviesassigment.be.Category;
 import mymoviesassigment.gui.model.CategoryModel;
-import mymoviesassigment.gui.model.MovieModel;
 
 /**
  * FXML Controller class

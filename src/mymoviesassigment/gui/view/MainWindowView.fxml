@@ -68,20 +68,11 @@
                   <Label text="Movies in category" />
                   <TableView fx:id="moviesInCategory" prefHeight="303.0" prefWidth="146.0">
                     <columns>
-                      <TableColumn fx:id="CatId" prefWidth="31.200012981891632" text="ID" />
-                      <TableColumn fx:id="CatMovieName" prefWidth="119.20000839233398" text="Movie Name" />
+                      <TableColumn fx:id="CatMovieName" prefWidth="180.7999725341797" text="Movie Name" />
                     </columns>
                   </TableView>
                   <HBox prefHeight="100.0" prefWidth="200.0">
                      <children>
-                        <Button mnemonicParsing="false" onAction="#moveMovieUp" text="/\">
-                           <HBox.margin>
-                              <Insets />
-                           </HBox.margin></Button>
-                        <Button mnemonicParsing="false" onAction="#moveMovieDown" text="\\/">
-                           <HBox.margin>
-                              <Insets left="15.0" />
-                           </HBox.margin></Button>
                         <Button mnemonicParsing="false" onAction="#removeMovie" text="Remove">
                            <HBox.margin>
                               <Insets left="15.0" />

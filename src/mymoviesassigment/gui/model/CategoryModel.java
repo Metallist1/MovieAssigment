@@ -6,9 +6,11 @@
 package mymoviesassigment.gui.model;
 
 import java.io.IOException;
+import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import mymoviesassigment.be.Category;
+import mymoviesassigment.be.Movie;
 import mymoviesassigment.bll.LogicFacade;
 import mymoviesassigment.bll.Manager;
 
@@ -65,5 +67,21 @@ public class CategoryModel {
     public void deletePlaylist(Category selectedItem, int selectedIndex) {
         logiclayer.deleteCategory(selectedItem);
         allCategory.remove(selectedIndex);
+    }
+
+    public void addToCategory(Category selectedItem, Movie selectedMovie) {
+        logiclayer.addToCategory(selectedItem, selectedMovie);
+        List<Movie> newList = selectedItem.getAllMoviesInCategory();
+        newList.add(selectedMovie);
+        selectedItem.setAllMoviesInCategory(newList);
+        selectedItem.setMovieCount(selectedItem.getMovieCount() + 1);
+    }
+
+    public void removeMovieFromCategory(Category selectedItem, Movie selectedMovie, int movieIndex) {
+        logiclayer.removeFromCategory(selectedItem, selectedMovie);
+        List<Movie> newList = selectedItem.getAllMoviesInCategory();
+        newList.remove(movieIndex);
+        selectedItem.setAllMoviesInCategory(newList);
+        selectedItem.setMovieCount(selectedItem.getMovieCount() - 1);
     }
 }
