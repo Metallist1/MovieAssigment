@@ -5,10 +5,16 @@
  */
 package mymoviesassigment.bll.util;
 
+import javafx.collections.ObservableList;
+import mymoviesassigment.be.Movie;
+
 /**
  *
  * @author nedas
  */
 public class searchMovie {
-    
+
+    public ObservableList<Movie> search(ObservableList<Movie> items, String text) {
+        return items.filtered((t) -> t.getName().toLowerCase().startsWith(text.toLowerCase()));
+    }
 }

@@ -66,4 +66,8 @@ public class MovieModel {
         logiclayer.deleteMovie(selectedItem);
         allMovies.remove(selectedIndex);
     }
+
+    public ObservableList<Movie> search(ObservableList<Movie> currentMovies, String movieToFind) {
+        return logiclayer.searchMovie(currentMovies,movieToFind);
+    }
 }

@@ -6,9 +6,10 @@
 package mymoviesassigment.bll;
 
 import java.util.List;
+import javafx.collections.ObservableList;
 import mymoviesassigment.be.Category;
 import mymoviesassigment.be.Movie;
-
+import mymoviesassigment.bll.exceptions.bllException;
 
 /**
  *
@@ -16,30 +17,26 @@ import mymoviesassigment.be.Movie;
  */
 public interface LogicFacade {
 
-    public List<Category> getAllCategories();
+    public List<Category> getAllCategories() throws bllException;
 
-    /*
-    Gets a list of all Movies
-     */
-    //public List<Movie> getAllMovies();
+    public List<Movie> getAllMovies() throws bllException;
 
-    public List<Movie> getAllMovies();
+    public Movie createMovie(String name, int rating, int imdbrating, String url) throws bllException;
 
-    public Movie createMovie(String name, int rating, int imdbrating, String url);
+    public Movie updateMovie(Movie movieToEdit, String name, int rating, int imdbrating, String url) throws bllException;
 
-    public Movie updateMovie(Movie movieToEdit, String name, int rating, int imdbrating, String url);
+    public void deleteMovie(Movie selectedItem) throws bllException;
 
-    public void deleteMovie(Movie selectedItem);
+    public Category createCategory(String name) throws bllException;
 
-    public Category createCategory(String name);
+    public Category updatedCategory(Category editingList, String name) throws bllException;
 
-    public Category updatedCategory(Category editingList, String name);
+    public void deleteCategory(Category selectedItem) throws bllException;
 
-    public void deleteCategory(Category selectedItem);
+    public void addToCategory(Category selectedItem, Movie selectedMovie) throws bllException;
 
-    public void addToCategory(Category selectedItem, Movie selectedMovie);
+    public void removeFromCategory(Category selectedItem, Movie selectedMovie) throws bllException;
 
-    public void removeFromCategory(Category selectedItem, Movie selectedMovie);
+    public ObservableList<Movie> searchMovie(ObservableList<Movie> currentMovies, String movieToFind);
 
 }
-

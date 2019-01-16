@@ -9,6 +9,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import mymoviesassigment.dal.exceptions.daoException;
 
 /**
  *
@@ -18,20 +21,22 @@ public class DatabaseConnectionDAO {
 
     private final Properties configProp = new Properties();
 
-    private DatabaseConnectionDAO() {
+    private DatabaseConnectionDAO(){
         //Private constructor to restrict new instances
         InputStream in = this.getClass().getClassLoader().getResourceAsStream("data/loginInfo.properties");
-        System.out.println("Read all database data");
         try {
             configProp.load(in);
         } catch (IOException e) {
-            e.printStackTrace();
+            try {
+                throw new daoException(e.getMessage());
+            } catch (daoException ex) {
+                Logger.getLogger(ex.getMessage());
+            }
         }
     }
 
-    //Bill Pugh Solution for singleton pattern
-    private static class LazyHolder {
-        private static final DatabaseConnectionDAO INSTANCE = new DatabaseConnectionDAO();
+    private static class LazyHolder  {
+        private static final DatabaseConnectionDAO INSTANCE = new DatabaseConnectionDAO() ;
     }
 
     public static DatabaseConnectionDAO getInstance() {

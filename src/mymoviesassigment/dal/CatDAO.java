@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import mymoviesassigment.be.Category;
 import mymoviesassigment.be.Movie;
+import mymoviesassigment.dal.exceptions.daoException;
 
 /**
  *
@@ -36,7 +37,7 @@ public class CatDAO {
     /*
     Gets a joint category query. Which is used to create a category list of movies.
      */
-    public List<Movie> getCategoryMovie(int id) {
+    public List<Movie> getCategoryMovie(int id) throws daoException {
         List<Movie> newMovieList = new ArrayList();
         try (Connection con = ds.getConnection()) {
             String query = ""
@@ -53,15 +54,13 @@ public class CatDAO {
             }
             return newMovieList;
         } catch (SQLServerException ex) {
-            System.out.println(ex);
-            return null;
+            throw new daoException("Connection to the server failed");
         } catch (SQLException ex) {
-            System.out.println(ex);
-            return null;
+            throw new daoException("Query cannot be executed");
         }
     }
 
-    public void addToCategory(Category selectedItem, Movie selectedMovie) {
+    public void addToCategory(Category selectedItem, Movie selectedMovie) throws daoException {
         String sql = "INSERT INTO CatMovie(CategoryId,MovieId) VALUES (?,?)";
         try (Connection con = ds.getConnection()) {
             PreparedStatement ps = con.prepareStatement(sql);
@@ -70,13 +69,13 @@ public class CatDAO {
             ps.addBatch();
             ps.executeBatch();
         } catch (SQLServerException ex) {
-            System.out.println(ex);
+            throw new daoException("Connection to the server failed");
         } catch (SQLException ex) {
-            System.out.println(ex);
+            throw new daoException("Query cannot be executed");
         }
     }
 
-    public void removeFromCategory(Category selectedItem, Movie selectedMovie) {
+    public void removeFromCategory(Category selectedItem, Movie selectedMovie) throws daoException {
         try (Connection con = ds.getConnection()) {
             System.out.println(selectedItem.getID() +" " + selectedMovie.getID());
             String query = "DELETE from CatMovie WHERE CategoryId = ? AND MovieId = ?";
@@ -85,23 +84,23 @@ public class CatDAO {
             preparedStmt.setInt(2, selectedMovie.getID());
             preparedStmt.execute();
         } catch (SQLServerException ex) {
-            System.out.println(ex);
+            throw new daoException("Connection to the server failed");
         } catch (SQLException ex) {
-            System.out.println(ex);
+            throw new daoException("Query cannot be executed");
         }
     }
 
 
-    public void removeFromCat(Category selectedItem) {
+    public void removeFromCat(Category selectedItem) throws daoException {
         try (Connection con = ds.getConnection()) {
             String query = "DELETE from CatMovie WHERE CategoryId = ?";
             PreparedStatement preparedStmt = con.prepareStatement(query);
             preparedStmt.setInt(1, selectedItem.getID());
             preparedStmt.execute();
         } catch (SQLServerException ex) {
-            System.out.println(ex);
+            throw new daoException("Connection to the server failed");
         } catch (SQLException ex) {
-            System.out.println(ex);
+            throw new daoException("Query cannot be executed");
         }
     }
 

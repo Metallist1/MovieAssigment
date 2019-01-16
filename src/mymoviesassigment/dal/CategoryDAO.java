@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import mymoviesassigment.be.Category;
 import mymoviesassigment.be.Movie;
+import mymoviesassigment.dal.exceptions.daoException;
 
 /**
  *
@@ -36,7 +37,7 @@ public class CategoryDAO {
         ds.setPortNumber(Integer.parseInt(DatabaseConnectionDAO.getInstance().getProperty("port")));
     }
 
-    public List<Category> getAllCategories() {
+    public List<Category> getAllCategories() throws daoException {
         List<Category> allCategories = new ArrayList<>(); // Creates a category array to store all category
 
         try (Connection con = ds.getConnection()) {
@@ -52,18 +53,16 @@ public class CategoryDAO {
             }
             return allCategories; // Returns the category array
         } catch (SQLServerException ex) {
-            System.out.println(ex);
-            return null;
+            throw new daoException("Cannot connect to server");
         } catch (SQLException ex) {
-            System.out.println(ex);
-            return null;
+            throw new daoException("Query cannot be executed");
         }
     }
 
     /*
     Creates Category with given name
      */
-    public Category createCategory(String name) {
+    public Category createCategory(String name) throws daoException {
         List<Movie> allMoviesInCategory = new ArrayList<>();
         String sql = "INSERT INTO Category(name) VALUES (?)";
         try (Connection con = ds.getConnection()) {
@@ -74,18 +73,16 @@ public class CategoryDAO {
             Category cat = new Category(getNewestID(), name, 0, allMoviesInCategory); //Creates a Category object and specifies that there are no movies present.
             return cat;
         } catch (SQLServerException ex) {
-            System.out.println(ex);
-            return null;
+            throw new daoException("Cannot connect to server");
         } catch (SQLException ex) {
-            System.out.println(ex);
-            return null;
+            throw new daoException("Query cannot be executed");
         }
     }
 
     /*
     Gets the newest inserted Category ID in order to create a Category object.
      */
-    private int getNewestID() {
+    private int getNewestID() throws daoException {
         int newestID = -1;
         try (Connection con = ds.getConnection()) {
             String query = "SELECT TOP(1) * FROM Category ORDER by id desc";
@@ -96,15 +93,13 @@ public class CategoryDAO {
             }
             return newestID;
         } catch (SQLServerException ex) {
-            System.out.println(ex);
-            return newestID;
+            throw new daoException("Cannot connect to server");
         } catch (SQLException ex) {
-            System.out.println(ex);
-            return newestID;
+            throw new daoException("Query cannot be executed");
         }
     }
 
-    public Category updateCategory(Category editingList, String name) {
+    public Category updateCategory(Category editingList, String name) throws daoException {
         try (Connection con = ds.getConnection()) {
             String query = "UPDATE Category set name = ? WHERE id = ?";
             PreparedStatement preparedStmt = con.prepareStatement(query);
@@ -115,24 +110,22 @@ public class CategoryDAO {
             Category cat = new Category(editingList.getID(), name, allMovies.size(), allMovies); //Creates a Category object and specifies that there are no movies present.
             return cat;
         } catch (SQLServerException ex) {
-            System.out.println(ex);
-            return null;
+            throw new daoException("Cannot connect to server");
         } catch (SQLException ex) {
-            System.out.println(ex);
-            return null;
+            throw new daoException("Query cannot be executed");
         }
     }
 
-    public void deleteCategory(Category selectedItem) {
+    public void deleteCategory(Category selectedItem) throws daoException {
         try (Connection con = ds.getConnection()) {
             String query = "DELETE from Category WHERE id = ?";
             PreparedStatement preparedStmt = con.prepareStatement(query);
             preparedStmt.setInt(1, selectedItem.getID());
             preparedStmt.execute();
         } catch (SQLServerException ex) {
-            System.out.println(ex);
+            throw new daoException("Cannot connect to server");
         } catch (SQLException ex) {
-            System.out.println(ex);
+            throw new daoException("Query cannot be executed");
         }
     }
 

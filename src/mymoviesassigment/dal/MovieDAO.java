@@ -15,6 +15,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import mymoviesassigment.be.Movie;
+import mymoviesassigment.dal.exceptions.daoException;
 
 /**
  *
@@ -36,7 +37,7 @@ public class MovieDAO {
     /*
     Initialises the constructor. Gets the array from the DatabaseConnectionDAO and sets up the database so the class can use it.
      */
-    public List<Movie> getAllMovies() {
+    public List<Movie> getAllMovies() throws daoException {
         List<Movie> allMovies = new ArrayList<>();
         try (Connection con = ds.getConnection()) {
             String sqlStatement = "SELECT * FROM Movie";
@@ -48,15 +49,13 @@ public class MovieDAO {
             }
             return allMovies; //Returns the full list
         } catch (SQLServerException ex) {
-            System.out.println(ex);
-            return null;
+            throw new daoException("Cannot connect to server");
         } catch (SQLException ex) {
-            System.out.println(ex);
-            return null;
+            throw new daoException("Cannot execute query");
         }
     }
 
-    public Movie createMovie(String name, int rating, int imdbrating, String url) {
+    public Movie createMovie(String name, int rating, int imdbrating, String url) throws daoException {
         String sql = "INSERT INTO Movie(name,userRating,imdbRating,filelink) VALUES (?,?,?,?)";
         try (Connection con = ds.getConnection()) {
             PreparedStatement ps = con.prepareStatement(sql);
@@ -66,19 +65,19 @@ public class MovieDAO {
             ps.setString(4, url);
             ps.addBatch();
             ps.executeBatch();
+            Movie mov = new Movie(name, rating, imdbrating, null, url, getNewestSongID()); // Creates a movie object
+            return mov; //Returns the movie object
         } catch (SQLServerException ex) {
-            System.out.println(ex);
+            throw new daoException("Cannot connect to server");
         } catch (SQLException ex) {
-            System.out.println(ex);
+            throw new daoException("Cannot execute query");
         }
-        Movie mov = new Movie(name, rating, imdbrating, null, url, getNewestSongID()); // Creates a song object
-        return mov; //Returns the movie object
     }
 
     /*
     Gets the top Movie ID from the database so it is possible to create the movie object
      */
-    private int getNewestSongID() {
+    private int getNewestSongID() throws daoException {
         int newestID = -1; // Default ID not found
         try (Connection con = ds.getConnection()) {
             String query = "SELECT TOP(1) * FROM Movie ORDER by id desc"; //Selects the biggest song ID in the database
@@ -89,15 +88,13 @@ public class MovieDAO {
             }
             return newestID;
         } catch (SQLServerException ex) {
-            System.out.println(ex);
-            return newestID;
+            throw new daoException("Cannot connect to server");
         } catch (SQLException ex) {
-            System.out.println(ex);
-            return newestID;
+            throw new daoException("Cannot execute query");
         }
     }
 
-    public Movie updateMovie(Movie movieToEdit, String name, int rating, int imdbrating, String url) {
+    public Movie updateMovie(Movie movieToEdit, String name, int rating, int imdbrating, String url) throws daoException {
         try (Connection con = ds.getConnection()) {
             String query = "UPDATE Movie set name = ?,userRating = ?,imdbRating = ?,filelink = ? WHERE id = ?";
             PreparedStatement preparedStmt = con.prepareStatement(query);
@@ -110,24 +107,22 @@ public class MovieDAO {
             Movie mov = new Movie(name, rating, imdbrating, movieToEdit.getLastView(), url, movieToEdit.getID()); //creates a new song object.
             return mov;
         } catch (SQLServerException ex) {
-            System.out.println(ex);
-            return null;
+            throw new daoException("Cannot connect to server");
         } catch (SQLException ex) {
-            System.out.println(ex);
-            return null;
+            throw new daoException("Cannot execute query");
         }
     }
 
-    public void removeMovie(Movie selectedItem) {
+    public void removeMovie(Movie selectedItem) throws daoException {
         try (Connection con = ds.getConnection()) {
             String query = "DELETE from Movie WHERE id = ?";
             PreparedStatement preparedStmt = con.prepareStatement(query);
             preparedStmt.setInt(1, selectedItem.getID());
             preparedStmt.execute();
         } catch (SQLServerException ex) {
-            System.out.println(ex);
+            throw new daoException("Cannot connect to server");
         } catch (SQLException ex) {
-            System.out.println(ex);
+            throw new daoException("Cannot execute query");
         }
     }
 

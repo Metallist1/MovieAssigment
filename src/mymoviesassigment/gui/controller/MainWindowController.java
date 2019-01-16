@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -25,9 +27,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-import javafx.scene.media.MediaView;
+import mymoviesassigment.gui.exceptions.modelException;
 import javafx.stage.Stage;
 import mymoviesassigment.be.Category;
 import mymoviesassigment.be.Movie;
@@ -73,9 +73,6 @@ public class MainWindowController implements Initializable {
     private CategoryModel categoryModel;
     private MovieModel movieModel;
 
-    private MediaPlayer mediaPlayer;
-    private int currentSongPlaying = 0;
-
     /**
      * Initializes the controller class.
      */
@@ -105,6 +102,14 @@ public class MainWindowController implements Initializable {
 
     @FXML
     private void search(KeyEvent event) {
+        if (searchTextBox.getText() == null || searchTextBox.getText().length() <= 0) { //If there is no value inserted. Set up normal songs
+            refreshMovieList(false);
+        } else { //Else call method from song filter by specifying both the song list and the query
+            ObservableList<Movie> foundMovieList = movieModel.search(movieModel.getCurrentMovies(), searchTextBox.getText());
+            if (foundMovieList != null) { //If anything is returned. Display it.
+                movieTableView.setItems(foundMovieList);
+            }
+        }
     }
 
     @FXML
