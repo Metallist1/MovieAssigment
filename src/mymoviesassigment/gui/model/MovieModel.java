@@ -6,11 +6,16 @@
 package mymoviesassigment.gui.model;
 
 import java.io.IOException;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import mymoviesassigment.be.Movie;
 import mymoviesassigment.bll.LogicFacade;
 import mymoviesassigment.bll.Manager;
+import mymoviesassigment.bll.exceptions.bllException;
+import mymoviesassigment.gui.exceptions.modelException;
 
 /**
  *
@@ -42,32 +47,54 @@ public class MovieModel {
     /*
     Gets all categories from database and then returns a string list of all categories
      */
-    public ObservableList<Movie> getAllMovies() {
+    public ObservableList<Movie> getAllMovies() throws modelException {
         allMovies = FXCollections.observableArrayList();
-        allMovies.addAll(logiclayer.getAllMovies());
-        return allMovies;
+        try {
+            allMovies.addAll(logiclayer.getAllMovies());
+            return allMovies;
+        } catch (bllException ex) {
+            throw new modelException(ex.getMessage());
+        }
     }
 
     public ObservableList<Movie> getCurrentMovies() {
         return allMovies;
     }
 
-    public void createMovie(String name, int rating, int imdbrating, String url) {
-        Movie createdMovie = logiclayer.createMovie(name, rating, imdbrating, url);
-        allMovies.add(createdMovie);
+    public void createMovie(String name, int rating, int imdbrating, String url) throws modelException {
+        Movie createdMovie;
+        try {
+            createdMovie = logiclayer.createMovie(name, rating, imdbrating, url);
+            allMovies.add(createdMovie);
+        } catch (bllException ex) {
+            throw new modelException(ex.getMessage());
+        }
     }
 
-    public void updateMovie(Movie movieToEdit,int movieIndex, String name, int rating, int imdbrating, String url) {
-        Movie updatedMovie = logiclayer.updateMovie(movieToEdit, name, rating, imdbrating, url);
-        allMovies.set(movieIndex,updatedMovie);
+    public void updateMovie(Movie movieToEdit, int movieIndex, String name, int rating, int imdbrating, String url) throws modelException {
+        Movie updatedMovie;
+        try {
+            updatedMovie = logiclayer.updateMovie(movieToEdit, name, rating, imdbrating, url);
+            allMovies.set(movieIndex, updatedMovie);
+        } catch (bllException ex) {
+            throw new modelException(ex.getMessage());
+        }
     }
 
-    public void deleteMovie(Movie selectedItem, int selectedIndex) {
-        logiclayer.deleteMovie(selectedItem);
-        allMovies.remove(selectedIndex);
+    public void deleteMovie(Movie selectedItem, int selectedIndex) throws modelException {
+        try {
+            logiclayer.deleteMovie(selectedItem);
+            allMovies.remove(selectedIndex);
+        } catch (bllException ex) {
+            throw new modelException(ex.getMessage());
+        }
     }
 
     public ObservableList<Movie> search(ObservableList<Movie> currentMovies, String movieToFind) {
-        return logiclayer.searchMovie(currentMovies,movieToFind);
+        return logiclayer.searchMovie(currentMovies, movieToFind);
+    }
+
+    public void updateMovieDate(Date date) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

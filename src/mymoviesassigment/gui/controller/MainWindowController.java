@@ -9,10 +9,12 @@ import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -21,6 +23,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -31,6 +34,7 @@ import mymoviesassigment.gui.exceptions.modelException;
 import javafx.stage.Stage;
 import mymoviesassigment.be.Category;
 import mymoviesassigment.be.Movie;
+import mymoviesassigment.bll.exceptions.bllException;
 import mymoviesassigment.gui.model.CategoryModel;
 import mymoviesassigment.gui.model.MovieModel;
 
@@ -48,19 +52,19 @@ public class MainWindowController implements Initializable {
     @FXML
     private TextField searchTextBox;
     @FXML
-    private TableColumn<?, ?> nameColumn;
+    private TableColumn<Movie, String> nameColumn;
     @FXML
-    private TableColumn<?, ?> timeColumn;
+    private TableColumn<Movie, Integer> timeColumn;
     @FXML
-    private TableColumn<?, ?> CategoryNames;
+    private TableColumn<Category, String> CategoryNames;
     @FXML
-    private TableColumn<?, ?> totalMovieCount;
+    private TableColumn<Category, Integer> totalMovieCount;
     @FXML
-    private TableColumn<?, ?> CatMovieName;
+    private TableColumn<Movie, String> CatMovieName;
     @FXML
-    private TableColumn<?, ?> imdbRating;
+    private TableColumn<Movie, Integer> imdbRating;
     @FXML
-    private TableColumn<?, ?> userRating;
+    private TableColumn<Movie, Integer> userRating;
     @FXML
     private TableView<Category> categoryTableView;
     @FXML
@@ -72,16 +76,29 @@ public class MainWindowController implements Initializable {
     private ObservableList<Category> observableListCategory;
     private CategoryModel categoryModel;
     private MovieModel movieModel;
+    @FXML
+    private ChoiceBox<Integer> ratingChoice;
 
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        ratingChoice.setItems(FXCollections.observableArrayList(
+                1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+        );
         categoryModel = CategoryModel.getInstance();
         movieModel = MovieModel.getInstance();
-        observableListMovie = movieModel.getAllMovies(); //Loads all movies
-        observableListCategory = categoryModel.getAllCategories(); //Loads all categories
+        try {
+            observableListMovie = movieModel.getAllMovies(); //Loads all movies
+        } catch (modelException ex) {
+            Logger.getLogger(MainWindowController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            observableListCategory = categoryModel.getAllCategories(); //Loads all categories
+        } catch (modelException ex) {
+            Logger.getLogger(MainWindowController.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
         movieTableView.setItems(observableListMovie);
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -98,13 +115,14 @@ public class MainWindowController implements Initializable {
 
     @FXML
     private void rateMovie(ActionEvent event) {
+        System.out.println(ratingChoice.getSelectionModel().getSelectedItem());
     }
 
     @FXML
     private void search(KeyEvent event) {
-        if (searchTextBox.getText() == null || searchTextBox.getText().length() <= 0) { //If there is no value inserted. Set up normal songs
+        if (searchTextBox.getText() == null || searchTextBox.getText().length() <= 0) { //If there is no value inserted. Set up normal movies
             refreshMovieList(false);
-        } else { //Else call method from song filter by specifying both the song list and the query
+        } else { //Else call method from movie filter by specifying both the movie list and the query
             ObservableList<Movie> foundMovieList = movieModel.search(movieModel.getCurrentMovies(), searchTextBox.getText());
             if (foundMovieList != null) { //If anything is returned. Display it.
                 movieTableView.setItems(foundMovieList);
@@ -113,12 +131,17 @@ public class MainWindowController implements Initializable {
     }
 
     @FXML
-    private void playMovie(ActionEvent event) throws IOException {
+    private void playMovie(ActionEvent event) throws modelException {
         play();
     }
 
-    private void play() throws IOException {
-        Desktop.getDesktop().open(new File(moviesInCategory.getSelectionModel().getSelectedItem().getUrl()));
+    private void play() throws modelException {
+        try {
+            Desktop.getDesktop().open(new File(moviesInCategory.getSelectionModel().getSelectedItem().getUrl()));
+            movieModel.updateMovieDate(new Date());
+        } catch (IOException ex) {
+            throw new modelException("File not found");
+        }
     }
 
     @FXML
@@ -134,7 +157,7 @@ public class MainWindowController implements Initializable {
     }
 
     @FXML
-    private void deleteCategory(ActionEvent event) {
+    private void deleteCategory(ActionEvent event) throws modelException {
         if (categoryTableView.getSelectionModel().getSelectedIndex() != -1) {
             categoryModel.deletePlaylist(categoryTableView.getSelectionModel().getSelectedItem(), categoryTableView.getSelectionModel().getSelectedIndex()); // calls delete categories from category table
             moviesInCategory.getItems().clear(); //clears items in category movie view
@@ -143,7 +166,7 @@ public class MainWindowController implements Initializable {
     }
 
     @FXML
-    private void removeMovie(ActionEvent event) {
+    private void removeMovie(ActionEvent event) throws modelException {
         if (moviesInCategory.getSelectionModel().getSelectedIndex() != -1 && categoryTableView.getSelectionModel().getSelectedIndex() != -1) {
             System.out.println(moviesInCategory.getSelectionModel().getSelectedItem().getID());
             categoryModel.removeMovieFromCategory(categoryTableView.getSelectionModel().getSelectedItem(), moviesInCategory.getSelectionModel().getSelectedItem(), moviesInCategory.getSelectionModel().getFocusedIndex());
@@ -152,7 +175,7 @@ public class MainWindowController implements Initializable {
     }
 
     @FXML
-    private void addMovie(ActionEvent event) {
+    private void addMovie(ActionEvent event) throws modelException {
         if (categoryTableView.getSelectionModel().getSelectedIndex() != -1 && movieTableView.getSelectionModel().getSelectedIndex() != -1) {
             categoryModel.addToCategory(categoryTableView.getSelectionModel().getSelectedItem(), movieTableView.getSelectionModel().getSelectedItem());
             refreshCatList();
@@ -172,7 +195,7 @@ public class MainWindowController implements Initializable {
     }
 
     @FXML
-    private void deleteMovie(ActionEvent event) {
+    private void deleteMovie(ActionEvent event) throws modelException {
         if (movieTableView.getSelectionModel().getSelectedIndex() != -1) {
             movieModel.deleteMovie(movieTableView.getSelectionModel().getSelectedItem(), movieTableView.getSelectionModel().getSelectedIndex()); // calls delete playlist from playlistModel
             refreshMovieList(true);
@@ -234,5 +257,9 @@ public class MainWindowController implements Initializable {
         for (int x = toBeAddedMovieList.size() - 1; x >= 0; x--) { //counts down from the bottom to top so the last song to be added would play last.
             moviesInCategory.getItems().add(toBeAddedMovieList.get(x)); //adds the song to the table
         }
+    }
+
+    @FXML
+    private void changeRating(MouseEvent event) {
     }
 }

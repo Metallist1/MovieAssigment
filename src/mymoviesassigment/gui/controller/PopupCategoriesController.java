@@ -14,6 +14,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import mymoviesassigment.be.Category;
+import mymoviesassigment.gui.exceptions.modelException;
 import mymoviesassigment.gui.model.CategoryModel;
 
 /**
@@ -45,7 +46,7 @@ public class PopupCategoriesController implements Initializable {
     }
 
     @FXML
-    private void saveCategoryName(ActionEvent event) {
+    private void saveCategoryName(ActionEvent event) throws modelException {
         String name = categoryNameField.getText().trim(); //Eliminates all white spaces (fron and back of the string)
         if (name != null && name.length() > 0 && name.length() < 50) { //If the string is not null and doesnt excede the databases char length
             if (!isEditing) {

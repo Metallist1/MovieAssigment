@@ -19,6 +19,7 @@ import javafx.scene.media.MediaPlayer;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import mymoviesassigment.be.Movie;
+import mymoviesassigment.gui.exceptions.modelException;
 import mymoviesassigment.gui.model.MovieModel;
 
 /**
@@ -83,7 +84,7 @@ public class PopupMovieController implements Initializable {
     }
 
     @FXML
-    private void saveMovie(ActionEvent event) {
+    private void saveMovie(ActionEvent event) throws modelException {
         int i = toIntExact(Math.round(mediaPlayer.getMedia().getDuration().toSeconds())); // Rounds up the seconds to an int so it can be inserted into the database
         String name = nameField.getText().trim(); //Eliminates all spaces (front and back. However not in the middle of the string )
         if (name != null && name.length() > 0 && name.length() < 50 && urlField.getText() != null && urlField.getText().length() != 0 && i > 0) { // Checks if the fields are not empty .
