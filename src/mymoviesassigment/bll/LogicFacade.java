@@ -5,6 +5,7 @@
  */
 package mymoviesassigment.bll;
 
+import java.util.Date;
 import java.util.List;
 import javafx.collections.ObservableList;
 import mymoviesassigment.be.Category;
@@ -38,5 +39,9 @@ public interface LogicFacade {
     public void removeFromCategory(Category selectedItem, Movie selectedMovie) throws bllException;
 
     public ObservableList<Movie> searchMovie(ObservableList<Movie> currentMovies, String movieToFind);
+
+    public Movie updateMovieRating(Movie selectedItem, Integer newRating) throws bllException;
+
+    public Movie updateMovieDate(Movie selectedItem) throws bllException;
 
 }

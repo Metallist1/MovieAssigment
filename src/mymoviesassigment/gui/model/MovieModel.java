@@ -94,7 +94,23 @@ public class MovieModel {
         return logiclayer.searchMovie(currentMovies, movieToFind);
     }
 
-    public void updateMovieDate(Date date) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void updateMovieRating(Movie selectedItem, int movieIndex, Integer newRating) throws modelException {
+        Movie updatedMovie;
+        try {
+            updatedMovie = logiclayer.updateMovieRating(selectedItem, newRating);
+            allMovies.set(movieIndex, updatedMovie);
+        } catch (bllException ex) {
+            throw new modelException(ex.getMessage());
+        }
+    }
+
+    public void updateMovieDate(Movie selectedItem, int selectedIndex) throws modelException {
+        Movie updatedMovie;
+        try {
+            updatedMovie = logiclayer.updateMovieDate(selectedItem);
+            allMovies.set(selectedIndex, updatedMovie);
+        } catch (bllException ex) {
+            throw new modelException(ex.getMessage());
+        }
     }
 }

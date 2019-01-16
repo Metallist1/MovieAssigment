@@ -6,9 +6,8 @@
 package mymoviesassigment.bll;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.collections.ObservableList;
 import mymoviesassigment.be.Category;
 import mymoviesassigment.be.Movie;
@@ -138,6 +137,24 @@ public class Manager implements LogicFacade {
     @Override
     public ObservableList<Movie> searchMovie(ObservableList<Movie> currentMovies, String movieToFind) {
         return searchforMovie.search(currentMovies, movieToFind);
+    }
+
+    @Override
+    public Movie updateMovieRating(Movie selectedItem, Integer newRating) throws bllException {
+        try {
+            return movieDAO.updateMovieRating(selectedItem, newRating);
+        } catch (daoException ex) {
+            throw new bllException(ex.getMessage());
+        }
+    }
+
+    @Override
+    public Movie updateMovieDate(Movie selectedItem) throws bllException {
+        try {
+            return movieDAO.updateMovieDate(selectedItem);
+        } catch (daoException ex) {
+            throw new bllException(ex.getMessage());
+        }
     }
 
 }

@@ -13,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import mymoviesassigment.be.Movie;
 import mymoviesassigment.dal.exceptions.daoException;
@@ -119,6 +120,42 @@ public class MovieDAO {
             PreparedStatement preparedStmt = con.prepareStatement(query);
             preparedStmt.setInt(1, selectedItem.getID());
             preparedStmt.execute();
+        } catch (SQLServerException ex) {
+            throw new daoException("Cannot connect to server");
+        } catch (SQLException ex) {
+            throw new daoException("Cannot execute query");
+        }
+    }
+
+    public Movie updateMovieRating(Movie selectedItem, Integer newRating) throws daoException {
+        try (Connection con = ds.getConnection()) {
+            String query = "UPDATE Movie set userRating = ? WHERE id = ?";
+            PreparedStatement preparedStmt = con.prepareStatement(query);
+            preparedStmt.setInt(1, newRating);
+            preparedStmt.setInt(2, selectedItem.getID());
+            preparedStmt.executeUpdate();
+            Movie mov = new Movie(selectedItem.getName(), newRating, selectedItem.getImdbRating(), selectedItem.getLastView(), selectedItem.getUrl(), selectedItem.getID()); //creates a new song object.
+            return mov;
+        } catch (SQLServerException ex) {
+            throw new daoException("Cannot connect to server");
+        } catch (SQLException ex) {
+            throw new daoException("Cannot execute query");
+        }
+    }
+
+    public Movie updateMovieDate(Movie selectedItem) throws daoException {
+                    java.util.Date utilStartDate = new Date();
+            java.sql.Date date = new java.sql.Date(utilStartDate.getTime());
+            System.out.println(date);
+            System.out.println(selectedItem.getID());
+        try (Connection con = ds.getConnection()) {
+            String query = "UPDATE Movie set lastview = ? WHERE id = ?";
+            PreparedStatement preparedStmt = con.prepareStatement(query);
+            preparedStmt.setDate(1, date);
+            preparedStmt.setInt(2, selectedItem.getID());
+            preparedStmt.executeUpdate();
+            Movie mov = new Movie(selectedItem.getName(), selectedItem.getUserRating(), selectedItem.getImdbRating(), date, selectedItem.getUrl(), selectedItem.getID()); //creates a new song object.
+            return mov;
         } catch (SQLServerException ex) {
             throw new daoException("Cannot connect to server");
         } catch (SQLException ex) {

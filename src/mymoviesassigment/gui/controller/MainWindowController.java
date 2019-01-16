@@ -102,8 +102,8 @@ public class MainWindowController implements Initializable {
 
         movieTableView.setItems(observableListMovie);
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-        imdbRating.setCellValueFactory(new PropertyValueFactory<>("userRating"));
-        userRating.setCellValueFactory(new PropertyValueFactory<>("imdbRating"));
+        userRating.setCellValueFactory(new PropertyValueFactory<>("userRating"));
+        imdbRating.setCellValueFactory(new PropertyValueFactory<>("imdbRating"));
         timeColumn.setCellValueFactory(new PropertyValueFactory<>("lastView"));
 
         categoryTableView.setItems(observableListCategory);
@@ -114,8 +114,11 @@ public class MainWindowController implements Initializable {
     }
 
     @FXML
-    private void rateMovie(ActionEvent event) {
-        System.out.println(ratingChoice.getSelectionModel().getSelectedItem());
+    private void rateMovie(ActionEvent event) throws modelException {
+        if (movieTableView.getSelectionModel().getSelectedIndex() != -1 && ratingChoice.getSelectionModel().getSelectedIndex() != -1) {
+            movieModel.updateMovieRating(movieTableView.getSelectionModel().getSelectedItem(), movieTableView.getSelectionModel().getSelectedIndex(), ratingChoice.getSelectionModel().getSelectedItem());
+            refreshMovieList(true);
+        }
     }
 
     @FXML
@@ -138,7 +141,7 @@ public class MainWindowController implements Initializable {
     private void play() throws modelException {
         try {
             Desktop.getDesktop().open(new File(moviesInCategory.getSelectionModel().getSelectedItem().getUrl()));
-            movieModel.updateMovieDate(new Date());
+            movieModel.updateMovieDate(moviesInCategory.getSelectionModel().getSelectedItem(), moviesInCategory.getSelectionModel().getSelectedIndex());
         } catch (IOException ex) {
             throw new modelException("File not found");
         }
@@ -228,17 +231,11 @@ public class MainWindowController implements Initializable {
     void refreshMovieList(boolean editing) {
         observableListMovie = movieModel.getCurrentMovies();
         movieTableView.setItems(observableListMovie);
-        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-        imdbRating.setCellValueFactory(new PropertyValueFactory<>("userRating"));
-        userRating.setCellValueFactory(new PropertyValueFactory<>("imdbRating"));
-        timeColumn.setCellValueFactory(new PropertyValueFactory<>("lastView"));
     }
 
     void refreshCategoryList() {
         observableListCategory = categoryModel.getCurrentCategories();
         categoryTableView.setItems(observableListCategory);
-        CategoryNames.setCellValueFactory(new PropertyValueFactory<>("name"));
-        totalMovieCount.setCellValueFactory(new PropertyValueFactory<>("movieCount"));
     }
 
     @FXML
