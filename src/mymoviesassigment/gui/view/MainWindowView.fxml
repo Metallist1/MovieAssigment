@@ -128,6 +128,6 @@
             </VBox>
          </children>
       </HBox>
-      <ChoiceBox fx:id="ratingChoice" layoutX="211.0" layoutY="13.0" onMousePressed="#changeRating" prefWidth="150.0" />
+      <ChoiceBox fx:id="ratingChoice" layoutX="211.0" layoutY="13.0" prefWidth="150.0" />
    </children>
 </AnchorPane>

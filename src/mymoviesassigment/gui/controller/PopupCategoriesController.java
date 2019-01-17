@@ -50,7 +50,7 @@ public class PopupCategoriesController implements Initializable {
         try {
             observableListCategory = categoryModel.getCurrentCategories(); //Loads all movies
         } catch (modelException ex) {
-            Logger.getLogger(PopupMovieController.class.getName()).log(Level.SEVERE, null, ex);
+            controller1.setUpAlert(ex.getMessage());
         }
     }
 
@@ -73,9 +73,9 @@ public class PopupCategoriesController implements Initializable {
                     categoryModel.editPlaylist(editingList, categoryIndex, name);
                     errorLabel.setText("Success: Successfully renamed the playlist");
                 }
-            }else {
-            errorLabel.setText("Error : Names should not be the same");
-        }
+            } else {
+                errorLabel.setText("Error : Names should not be the same");
+            }
         } else {
             errorLabel.setText("Error : Check if the name you inserted is valid");
         }

@@ -64,7 +64,7 @@ public class PopupMovieController implements Initializable {
         try {
             observableListMovie = movieModel.getCurrentMovies(); //Loads all movies
         } catch (modelException ex) {
-            Logger.getLogger(PopupMovieController.class.getName()).log(Level.SEVERE, null, ex);
+            controller1.setUpAlert(ex.getMessage());
         }
     }
 

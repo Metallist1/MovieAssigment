@@ -7,8 +7,10 @@ package mymoviesassigment.gui.controller;
 
 import java.awt.Desktop;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -22,6 +24,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TableColumn;
@@ -92,14 +96,30 @@ public class MainWindowController implements Initializable {
         try {
             observableListMovie = movieModel.getAllMovies(); //Loads all movies
         } catch (modelException ex) {
-            Logger.getLogger(MainWindowController.class.getName()).log(Level.SEVERE, null, ex);
+            setUpAlert(ex.getMessage());
         }
         try {
             observableListCategory = categoryModel.getAllCategories(); //Loads all categories
         } catch (modelException ex) {
-            Logger.getLogger(MainWindowController.class.getName()).log(Level.SEVERE, null, ex);
+            setUpAlert(ex.getMessage());
         }
-
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.YEAR, -2);
+        Date d1 = calendar.getTime();
+        java.util.Date utilStartDate = d1;
+        java.sql.Date date = new java.sql.Date(utilStartDate.getTime());
+        for (Movie movie : observableListMovie) {
+            if (movie.getLastView() != null) {
+                if (movie.getLastView().before(date) && movie.getUserRating() < 6) {
+                    Alert alert = new Alert(AlertType.INFORMATION);
+                    alert.setTitle("Alert");
+                    alert.setHeaderText(null);
+                    alert.setContentText("You currently have movies that you watched 2 years ago and rated with a score of 6 or lower. Please consider deleting them.");
+                    alert.showAndWait();
+                    break;
+                }
+            }
+        }
         movieTableView.setItems(observableListMovie);
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         userRating.setCellValueFactory(new PropertyValueFactory<>("userRating"));
@@ -114,7 +134,7 @@ public class MainWindowController implements Initializable {
     }
 
     @FXML
-    private void rateMovie(ActionEvent event) throws modelException {
+    private void rateMovie(ActionEvent event) {
         if (moviesInCategory.getSelectionModel().getSelectedIndex() != -1 && ratingChoice.getSelectionModel().getSelectedIndex() != -1) {
             Movie movieToBeRated = null;
             int movieIndex = 0;
@@ -126,93 +146,139 @@ public class MainWindowController implements Initializable {
                 movieIndex++;
             }
             if (movieToBeRated != null) {
-                movieModel.updateMovieRating(movieToBeRated, movieIndex, ratingChoice.getSelectionModel().getSelectedItem());
-                refreshMovieList(false);
+                try {
+                    movieModel.updateMovieRating(movieToBeRated, movieIndex, ratingChoice.getSelectionModel().getSelectedItem());
+                    refreshMovieList(false);
+                } catch (modelException ex) {
+                    setUpAlert(ex.getMessage());
+                }
             }
         }
     }
 
     @FXML
-    private void search(KeyEvent event) throws modelException {
-        if (searchTextBox.getText() == null || searchTextBox.getText().length() <= 0) { //If there is no value inserted. Set up normal movies
+    private void search(KeyEvent event) {
+        if (searchTextBox.getText() == null || searchTextBox.getText().length() <= 0) {
+            //If there is no value inserted. Set up normal movies
             refreshMovieList(false);
         } else { //Else call method from movie filter by specifying both the movie list and the query
-            ObservableList<Movie> foundMovieList = movieModel.search(movieModel.getCurrentMovies(), searchTextBox.getText());
-            if (foundMovieList != null) { //If anything is returned. Display it.
-                movieTableView.setItems(foundMovieList);
+            ObservableList<Movie> foundMovieList;
+            try {
+                foundMovieList = movieModel.search(movieModel.getCurrentMovies(), searchTextBox.getText());
+                if (foundMovieList != null) { //If anything is returned. Display it.
+                    movieTableView.setItems(foundMovieList);
+                }
+            } catch (modelException ex) {
+                setUpAlert(ex.getMessage());
             }
         }
     }
 
     @FXML
-    private void playMovie(ActionEvent event) throws modelException {
-        play();
+    private void playMovie(ActionEvent event) {
+        try {
+            play();
+        } catch (modelException ex) {
+            setUpAlert(ex.getMessage());
+        } catch (IOException ex) {
+            setUpAlert(ex.getMessage());
+        }catch (IllegalArgumentException ex) {
+            setUpAlert(ex.getMessage());
+        }
     }
 
-    private void play() throws modelException {
-        try {
+    private void play() throws modelException, IOException, IllegalArgumentException {
             Desktop.getDesktop().open(new File(moviesInCategory.getSelectionModel().getSelectedItem().getUrl()));
             movieModel.updateMovieDate(moviesInCategory.getSelectionModel().getSelectedItem(), moviesInCategory.getSelectionModel().getSelectedIndex());
+    }
+
+    @FXML
+    private void createCategory(ActionEvent event) {
+        try {
+            setUpScenes(1, false);
         } catch (IOException ex) {
-            throw new modelException("File not found");
+            setUpAlert(ex.getMessage());
         }
     }
 
     @FXML
-    private void createCategory(ActionEvent event) throws IOException {
-        setUpScenes(1, false);
-    }
-
-    @FXML
-    private void editCategory(ActionEvent event) throws IOException {
+    private void editCategory(ActionEvent event) {
         if (categoryTableView.getSelectionModel().getSelectedIndex() != -1) {
-            setUpScenes(1, true);
+            try {
+                setUpScenes(1, true);
+            } catch (IOException ex) {
+                setUpAlert(ex.getMessage());
+            }
         }
     }
 
     @FXML
-    private void deleteCategory(ActionEvent event) throws modelException {
+    private void deleteCategory(ActionEvent event) {
         if (categoryTableView.getSelectionModel().getSelectedIndex() != -1) {
-            categoryModel.deletePlaylist(categoryTableView.getSelectionModel().getSelectedItem(), categoryTableView.getSelectionModel().getSelectedIndex()); // calls delete categories from category table
-            moviesInCategory.getItems().clear(); //clears items in category movie view
-            refreshCategoryList(); //refreshes the list for the changes to take place
+            try {
+                categoryModel.deletePlaylist(categoryTableView.getSelectionModel().getSelectedItem(), categoryTableView.getSelectionModel().getSelectedIndex()); // calls delete categories from category table
+                moviesInCategory.getItems().clear(); //clears items in category movie view
+                refreshCategoryList(); //refreshes the list for the changes to take place
+            } catch (modelException ex) {
+                setUpAlert(ex.getMessage());
+            }
         }
     }
 
     @FXML
-    private void removeMovie(ActionEvent event) throws modelException {
+    private void removeMovie(ActionEvent event) {
         if (moviesInCategory.getSelectionModel().getSelectedIndex() != -1 && categoryTableView.getSelectionModel().getSelectedIndex() != -1) {
-            System.out.println(moviesInCategory.getSelectionModel().getSelectedItem().getID());
-            categoryModel.removeMovieFromCategory(categoryTableView.getSelectionModel().getSelectedItem(), categoryTableView.getSelectionModel().getSelectedIndex(), moviesInCategory.getSelectionModel().getSelectedItem(), moviesInCategory.getSelectionModel().getFocusedIndex());
-            refreshCatList();
+            try {
+                System.out.println(moviesInCategory.getSelectionModel().getSelectedItem().getID());
+                categoryModel.removeMovieFromCategory(categoryTableView.getSelectionModel().getSelectedItem(), categoryTableView.getSelectionModel().getSelectedIndex(), moviesInCategory.getSelectionModel().getSelectedItem(), moviesInCategory.getSelectionModel().getFocusedIndex());
+                refreshCatList();
+            } catch (modelException ex) {
+                setUpAlert(ex.getMessage());
+            }
         }
     }
 
     @FXML
-    private void addMovie(ActionEvent event) throws modelException {
+    private void addMovie(ActionEvent event) {
         if (categoryTableView.getSelectionModel().getSelectedIndex() != -1 && movieTableView.getSelectionModel().getSelectedIndex() != -1) {
-            categoryModel.addToCategory(categoryTableView.getSelectionModel().getSelectedItem(), categoryTableView.getSelectionModel().getSelectedIndex(), movieTableView.getSelectionModel().getSelectedItem());
-            refreshCatList();
+            try {
+                categoryModel.addToCategory(categoryTableView.getSelectionModel().getSelectedItem(), categoryTableView.getSelectionModel().getSelectedIndex(), movieTableView.getSelectionModel().getSelectedItem());
+                refreshCatList();
+            } catch (modelException ex) {
+                setUpAlert(ex.getMessage());
+            }
         }
     }
 
     @FXML
-    private void createMovie(ActionEvent event) throws IOException {
-        setUpScenes(2, false);
-    }
-
-    @FXML
-    private void editMovie(ActionEvent event) throws IOException {
-        if (movieTableView.getSelectionModel().getSelectedIndex() != -1) {
-            setUpScenes(2, true);
+    private void createMovie(ActionEvent event) {
+        try {
+            setUpScenes(2, false);
+        } catch (IOException ex) {
+            setUpAlert(ex.getMessage());
         }
     }
 
     @FXML
-    private void deleteMovie(ActionEvent event) throws modelException {
+    private void editMovie(ActionEvent event) {
         if (movieTableView.getSelectionModel().getSelectedIndex() != -1) {
-            movieModel.deleteMovie(movieTableView.getSelectionModel().getSelectedItem(), movieTableView.getSelectionModel().getSelectedIndex()); // calls delete playlist from playlistModel
-            refreshMovieList(true);
+            try {
+                setUpScenes(2, true);
+            } catch (IOException ex) {
+                setUpAlert(ex.getMessage());
+            }
+        }
+    }
+
+    @FXML
+    private void deleteMovie(ActionEvent event) {
+        if (movieTableView.getSelectionModel().getSelectedIndex() != -1) {
+            try {
+                movieModel.deleteMovie(movieTableView.getSelectionModel().getSelectedItem(), movieTableView.getSelectionModel().getSelectedIndex()); // calls delete playlist from playlistModel
+                refreshMovieList(true);
+            } catch (modelException ex) {
+                setUpAlert(ex.getMessage());
+            }
         }
     }
 
@@ -239,19 +305,31 @@ public class MainWindowController implements Initializable {
         stage.show();
     }
 
-    void refreshMovieList(boolean editing) throws modelException {
+    void refreshMovieList(boolean editing) {
         if (editing) {
-            observableListCategory = categoryModel.getAllCategories();
-            refreshCatList();
+            try {
+                observableListCategory = categoryModel.getAllCategories();
+                refreshCatList();
+            } catch (modelException ex) {
+                setUpAlert(ex.getMessage());
+            }
         } else {
-            observableListMovie = movieModel.getCurrentMovies();
-            movieTableView.setItems(observableListMovie);
+            try {
+                observableListMovie = movieModel.getCurrentMovies();
+                movieTableView.setItems(observableListMovie);
+            } catch (modelException ex) {
+                setUpAlert(ex.getMessage());
+            }
         }
     }
 
-    void refreshCategoryList() throws modelException {
-        observableListCategory = categoryModel.getCurrentCategories();
-        categoryTableView.setItems(observableListCategory);
+    void refreshCategoryList() {
+        try {
+            observableListCategory = categoryModel.getCurrentCategories();
+            categoryTableView.setItems(observableListCategory);
+        } catch (modelException ex) {
+            setUpAlert(ex.getMessage());
+        }
     }
 
     @FXML
@@ -265,7 +343,7 @@ public class MainWindowController implements Initializable {
         }
     }
 
-    private void refreshCatList() throws modelException {
+    private void refreshCatList() {
         moviesInCategory.getItems().clear();
         refreshCategoryList();
         List<Movie> toBeAddedMovieList = categoryTableView.getSelectionModel().getSelectedItem().getAllMoviesInCategory(); //Gets specific playlist song list
@@ -274,7 +352,11 @@ public class MainWindowController implements Initializable {
         }
     }
 
-    @FXML
-    private void changeRating(MouseEvent event) {
+    protected void setUpAlert(String text) {
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("Alert");
+        alert.setHeaderText(null);
+        alert.setContentText(text);
+        alert.showAndWait();
     }
 }
