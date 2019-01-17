@@ -6,16 +6,14 @@
 package mymoviesassigment.bll;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 import javafx.collections.ObservableList;
 import mymoviesassigment.be.Category;
 import mymoviesassigment.be.Movie;
 import mymoviesassigment.bll.util.searchMovie;
-import mymoviesassigment.dal.CatDAO;
-import mymoviesassigment.dal.CategoryDAO;
-import mymoviesassigment.dal.MovieDAO;
 import mymoviesassigment.bll.exceptions.bllException;
+import mymoviesassigment.dal.DAOLogicFacade;
+import mymoviesassigment.dal.DAOManager;
 import mymoviesassigment.dal.exceptions.daoException;
 
 /**
@@ -23,26 +21,21 @@ import mymoviesassigment.dal.exceptions.daoException;
  * @author nedas
  */
 public class Manager implements LogicFacade {
-
-    private final MovieDAO movieDAO;
-    private final CategoryDAO categoryDAO;
-    private final CatDAO catDAO;
+    private final DAOLogicFacade logiclayer;
     private final searchMovie searchforMovie;
 
     /*
     Initialises all classes in DAL
      */
     public Manager() throws IOException {
-        movieDAO = new MovieDAO();
-        categoryDAO = new CategoryDAO();
-        catDAO = new CatDAO();
+        logiclayer = new DAOManager();
         searchforMovie = new searchMovie();
     }
 
     @Override
     public List<Category> getAllCategories() throws bllException {
         try {
-            return categoryDAO.getAllCategories();
+            return logiclayer.getAllCategories();
         } catch (daoException ex) {
             throw new bllException(ex.getMessage());
         }
@@ -51,7 +44,7 @@ public class Manager implements LogicFacade {
     @Override
     public List<Movie> getAllMovies() throws bllException {
         try {
-            return movieDAO.getAllMovies();
+            return logiclayer.getAllMovies();
         } catch (daoException ex) {
             throw new bllException(ex.getMessage());
         }
@@ -60,7 +53,7 @@ public class Manager implements LogicFacade {
     @Override
     public Movie createMovie(String name, int rating, int imdbrating, String url) throws bllException {
         try {
-            return movieDAO.createMovie(name, rating, imdbrating, url);
+            return logiclayer.createMovie(name, rating, imdbrating, url);
         } catch (daoException ex) {
             throw new bllException(ex.getMessage());
         }
@@ -69,7 +62,7 @@ public class Manager implements LogicFacade {
     @Override
     public Movie updateMovie(Movie movieToEdit, String name, int rating, int imdbrating, String url) throws bllException {
         try {
-            return movieDAO.updateMovie(movieToEdit, name, rating, imdbrating, url);
+            return logiclayer.updateMovie(movieToEdit, name, rating, imdbrating, url);
         } catch (daoException ex) {
             throw new bllException(ex.getMessage());
         }
@@ -78,7 +71,7 @@ public class Manager implements LogicFacade {
     @Override
     public void deleteMovie(Movie selectedItem) throws bllException {
         try {
-            movieDAO.removeMovie(selectedItem);
+            logiclayer.deleteMovie(selectedItem);
         } catch (daoException ex) {
             throw new bllException(ex.getMessage());
         }
@@ -87,7 +80,7 @@ public class Manager implements LogicFacade {
     @Override
     public Category createCategory(String name) throws bllException {
         try {
-            return categoryDAO.createCategory(name);
+            return logiclayer.createCategory(name);
         } catch (daoException ex) {
             throw new bllException(ex.getMessage());
         }
@@ -96,7 +89,7 @@ public class Manager implements LogicFacade {
     @Override
     public Category updatedCategory(Category editingList, String name) throws bllException {
         try {
-            return categoryDAO.updateCategory(editingList, name);
+            return logiclayer.updatedCategory(editingList, name);
         } catch (daoException ex) {
             throw new bllException(ex.getMessage());
         }
@@ -105,12 +98,12 @@ public class Manager implements LogicFacade {
     @Override
     public void deleteCategory(Category selectedItem) throws bllException {
         try {
-            catDAO.removeFromCat(selectedItem);
+            logiclayer.deleteCategory(selectedItem);
         } catch (daoException ex) {
             throw new bllException(ex.getMessage());
         }
         try {
-            categoryDAO.deleteCategory(selectedItem);
+            logiclayer.deleteCategory(selectedItem);
         } catch (daoException ex) {
             throw new bllException(ex.getMessage());
         }
@@ -119,7 +112,7 @@ public class Manager implements LogicFacade {
     @Override
     public void addToCategory(Category selectedItem, Movie selectedMovie) throws bllException {
         try {
-            catDAO.addToCategory(selectedItem, selectedMovie);
+            logiclayer.addToCategory(selectedItem, selectedMovie);
         } catch (daoException ex) {
             throw new bllException(ex.getMessage());
         }
@@ -128,7 +121,7 @@ public class Manager implements LogicFacade {
     @Override
     public void removeFromCategory(Category selectedItem, Movie selectedMovie) throws bllException {
         try {
-            catDAO.removeFromCategory(selectedItem, selectedMovie);
+            logiclayer.removeFromCategory(selectedItem, selectedMovie);
         } catch (daoException ex) {
             throw new bllException(ex.getMessage());
         }
@@ -142,7 +135,7 @@ public class Manager implements LogicFacade {
     @Override
     public Movie updateMovieRating(Movie selectedItem, Integer newRating) throws bllException {
         try {
-            return movieDAO.updateMovieRating(selectedItem, newRating);
+            return logiclayer.updateMovieRating(selectedItem, newRating);
         } catch (daoException ex) {
             throw new bllException(ex.getMessage());
         }
@@ -151,7 +144,7 @@ public class Manager implements LogicFacade {
     @Override
     public Movie updateMovieDate(Movie selectedItem) throws bllException {
         try {
-            return movieDAO.updateMovieDate(selectedItem);
+            return logiclayer.updateMovieDate(selectedItem);
         } catch (daoException ex) {
             throw new bllException(ex.getMessage());
         }

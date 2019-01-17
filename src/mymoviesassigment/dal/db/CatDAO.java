@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package mymoviesassigment.dal;
+package mymoviesassigment.dal.db;
 
 import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
 import com.microsoft.sqlserver.jdbc.SQLServerException;
@@ -77,7 +77,7 @@ public class CatDAO {
 
     public void removeFromCategory(Category selectedItem, Movie selectedMovie) throws daoException {
         try (Connection con = ds.getConnection()) {
-            System.out.println(selectedItem.getID() +" " + selectedMovie.getID());
+            System.out.println(selectedItem.getID() + " " + selectedMovie.getID());
             String query = "DELETE from CatMovie WHERE CategoryId = ? AND MovieId = ?";
             PreparedStatement preparedStmt = con.prepareStatement(query);
             preparedStmt.setInt(1, selectedItem.getID());
@@ -90,10 +90,22 @@ public class CatDAO {
         }
     }
 
-
     public void removeFromCat(Category selectedItem) throws daoException {
         try (Connection con = ds.getConnection()) {
             String query = "DELETE from CatMovie WHERE CategoryId = ?";
+            PreparedStatement preparedStmt = con.prepareStatement(query);
+            preparedStmt.setInt(1, selectedItem.getID());
+            preparedStmt.execute();
+        } catch (SQLServerException ex) {
+            throw new daoException("Connection to the server failed");
+        } catch (SQLException ex) {
+            throw new daoException("Query cannot be executed");
+        }
+    }
+
+    public void removeMoviesFromCat(Movie selectedItem) throws daoException {
+        try (Connection con = ds.getConnection()) {
+            String query = "DELETE from CatMovie WHERE MovieId = ?";
             PreparedStatement preparedStmt = con.prepareStatement(query);
             preparedStmt.setInt(1, selectedItem.getID());
             preparedStmt.execute();

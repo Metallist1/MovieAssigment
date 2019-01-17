@@ -5,7 +5,6 @@
  */
 package mymoviesassigment.bll;
 
-import java.util.Date;
 import java.util.List;
 import javafx.collections.ObservableList;
 import mymoviesassigment.be.Category;

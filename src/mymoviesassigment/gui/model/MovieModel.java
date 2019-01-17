@@ -6,16 +6,13 @@
 package mymoviesassigment.gui.model;
 
 import java.io.IOException;
-import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import mymoviesassigment.be.Movie;
-import mymoviesassigment.bll.LogicFacade;
 import mymoviesassigment.bll.Manager;
 import mymoviesassigment.bll.exceptions.bllException;
 import mymoviesassigment.gui.exceptions.modelException;
+import mymoviesassigment.bll.LogicFacade;
 
 /**
  *

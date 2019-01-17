@@ -7,15 +7,12 @@ package mymoviesassigment.gui.controller;
 
 import java.awt.Desktop;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -38,7 +35,6 @@ import mymoviesassigment.gui.exceptions.modelException;
 import javafx.stage.Stage;
 import mymoviesassigment.be.Category;
 import mymoviesassigment.be.Movie;
-import mymoviesassigment.bll.exceptions.bllException;
 import mymoviesassigment.gui.model.CategoryModel;
 import mymoviesassigment.gui.model.MovieModel;
 
@@ -182,14 +178,14 @@ public class MainWindowController implements Initializable {
             setUpAlert(ex.getMessage());
         } catch (IOException ex) {
             setUpAlert(ex.getMessage());
-        }catch (IllegalArgumentException ex) {
+        } catch (IllegalArgumentException ex) {
             setUpAlert(ex.getMessage());
         }
     }
 
     private void play() throws modelException, IOException, IllegalArgumentException {
-            Desktop.getDesktop().open(new File(moviesInCategory.getSelectionModel().getSelectedItem().getUrl()));
-            movieModel.updateMovieDate(moviesInCategory.getSelectionModel().getSelectedItem(), moviesInCategory.getSelectionModel().getSelectedIndex());
+        Desktop.getDesktop().open(new File(moviesInCategory.getSelectionModel().getSelectedItem().getUrl()));
+        movieModel.updateMovieDate(moviesInCategory.getSelectionModel().getSelectedItem(), moviesInCategory.getSelectionModel().getSelectedIndex());
     }
 
     @FXML
@@ -346,9 +342,11 @@ public class MainWindowController implements Initializable {
     private void refreshCatList() {
         moviesInCategory.getItems().clear();
         refreshCategoryList();
-        List<Movie> toBeAddedMovieList = categoryTableView.getSelectionModel().getSelectedItem().getAllMoviesInCategory(); //Gets specific playlist song list
-        for (int x = toBeAddedMovieList.size() - 1; x >= 0; x--) { //counts down from the bottom to top so the last song to be added would play last.
-            moviesInCategory.getItems().add(toBeAddedMovieList.get(x)); //adds the song to the table
+        if (categoryTableView.getSelectionModel().getSelectedIndex() != -1) {
+            List<Movie> toBeAddedMovieList = categoryTableView.getSelectionModel().getSelectedItem().getAllMoviesInCategory(); //Gets specific playlist song list
+            for (int x = toBeAddedMovieList.size() - 1; x >= 0; x--) { //counts down from the bottom to top so the last song to be added would play last.
+                moviesInCategory.getItems().add(toBeAddedMovieList.get(x)); //adds the song to the table
+            }
         }
     }
 
