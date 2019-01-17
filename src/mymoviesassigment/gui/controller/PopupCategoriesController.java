@@ -7,6 +7,9 @@ package mymoviesassigment.gui.controller;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -36,6 +39,7 @@ public class PopupCategoriesController implements Initializable {
     private Category editingList;
     private int categoryIndex;
     MainWindowController controller1;
+    private ObservableList<Category> observableListCategory;
 
     /**
      * Initializes the controller class.
@@ -43,19 +47,35 @@ public class PopupCategoriesController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         categoryModel = CategoryModel.getInstance();
+        try {
+            observableListCategory = categoryModel.getCurrentCategories(); //Loads all movies
+        } catch (modelException ex) {
+            Logger.getLogger(PopupMovieController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @FXML
     private void saveCategoryName(ActionEvent event) throws modelException {
+        boolean isFound = false;
         String name = categoryNameField.getText().trim(); //Eliminates all white spaces (fron and back of the string)
         if (name != null && name.length() > 0 && name.length() < 50) { //If the string is not null and doesnt excede the databases char length
-            if (!isEditing) {
-                categoryModel.createPlaylist(name);
-                errorLabel.setText("Success: Successfully created the playlist");
-            } else {
-                categoryModel.editPlaylist(editingList,categoryIndex, name);
-                errorLabel.setText("Success: Successfully renamed the playlist");
+            for (Category category : observableListCategory) {
+                if (category.getName() == null ? name == null : category.getName().equals(name)) {
+                    isFound = true;
+                    break;
+                }
             }
+            if (!isFound) {
+                if (!isEditing) {
+                    categoryModel.createPlaylist(name);
+                    errorLabel.setText("Success: Successfully created the playlist");
+                } else {
+                    categoryModel.editPlaylist(editingList, categoryIndex, name);
+                    errorLabel.setText("Success: Successfully renamed the playlist");
+                }
+            }else {
+            errorLabel.setText("Error : Names should not be the same");
+        }
         } else {
             errorLabel.setText("Error : Check if the name you inserted is valid");
         }
@@ -68,11 +88,11 @@ public class PopupCategoriesController implements Initializable {
         stage.close();
     }
 
-    void setInfo(Category selectedItem , int categoryIndex) {
+    void setInfo(Category selectedItem, int categoryIndex) {
         isEditing = true;
         editingList = selectedItem;
         categoryNameField.setText(selectedItem.getName());
-        this.categoryIndex=categoryIndex;
+        this.categoryIndex = categoryIndex;
     }
 
     /*

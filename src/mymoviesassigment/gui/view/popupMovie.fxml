@@ -15,12 +15,12 @@
       <Button layoutX="199.0" layoutY="283.0" mnemonicParsing="false" onAction="#chooseURL" text="Choose..." />
       <Button layoutX="456.0" layoutY="336.0" mnemonicParsing="false" onAction="#goBack" text="Cancel" />
       <Button layoutX="378.0" layoutY="336.0" mnemonicParsing="false" onAction="#saveMovie" text="Save" />
-      <Label layoutX="118.0" layoutY="102.0" text="Name :" />
-      <Label layoutX="118.0" layoutY="140.0" text="Personal rating:" />
-      <Label layoutX="118.0" layoutY="221.0" text="Time :" />
-      <Label layoutX="118.0" layoutY="255.0" text="Url : " />
+      <Label layoutX="79.0" layoutY="101.0" text="Name :" />
+      <Label layoutX="79.0" layoutY="139.0" text="Personal rating:" />
+      <Label layoutX="79.0" layoutY="220.0" text="Time :" />
+      <Label layoutX="79.0" layoutY="254.0" text="Url : " />
       <Label fx:id="errorLabel" layoutX="120.0" layoutY="56.0" />
       <TextField fx:id="IMDBratingField" layoutX="202.0" layoutY="174.0" promptText="Insert IMDB rating" />
-      <Label layoutX="118.0" layoutY="177.0" text="IMDB rating :" />
+      <Label layoutX="79.0" layoutY="176.0" text="IMDB rating :" />
    </children>
 </AnchorPane>

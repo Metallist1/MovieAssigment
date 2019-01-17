@@ -57,7 +57,7 @@ public class CategoryModel {
         return allCategory;
     }
 
-    public ObservableList<Category> getCurrentCategories() {
+    public ObservableList<Category> getCurrentCategories() throws modelException {
         return allCategory;
     }
 
@@ -90,25 +90,27 @@ public class CategoryModel {
         }
     }
 
-    public void addToCategory(Category selectedItem, Movie selectedMovie) throws modelException {
+    public void addToCategory(Category selectedItem, int selectedIndex, Movie selectedMovie) throws modelException {
         try {
             logiclayer.addToCategory(selectedItem, selectedMovie);
             List<Movie> newList = selectedItem.getAllMoviesInCategory();
             newList.add(selectedMovie);
             selectedItem.setAllMoviesInCategory(newList);
             selectedItem.setMovieCount(selectedItem.getMovieCount() + 1);
+            allCategory.set(selectedIndex, selectedItem);
         } catch (bllException ex) {
             throw new modelException(ex.getMessage());
         }
     }
 
-    public void removeMovieFromCategory(Category selectedItem, Movie selectedMovie, int movieIndex) throws modelException {
+    public void removeMovieFromCategory(Category selectedItem, int selectedIndex, Movie selectedMovie, int movieIndex) throws modelException {
         try {
             logiclayer.removeFromCategory(selectedItem, selectedMovie);
             List<Movie> newList = selectedItem.getAllMoviesInCategory();
             newList.remove(movieIndex);
             selectedItem.setAllMoviesInCategory(newList);
             selectedItem.setMovieCount(selectedItem.getMovieCount() - 1);
+            allCategory.set(selectedIndex, selectedItem);
         } catch (bllException ex) {
             throw new modelException(ex.getMessage());
         }

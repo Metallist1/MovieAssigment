@@ -115,14 +115,25 @@ public class MainWindowController implements Initializable {
 
     @FXML
     private void rateMovie(ActionEvent event) throws modelException {
-        if (movieTableView.getSelectionModel().getSelectedIndex() != -1 && ratingChoice.getSelectionModel().getSelectedIndex() != -1) {
-            movieModel.updateMovieRating(movieTableView.getSelectionModel().getSelectedItem(), movieTableView.getSelectionModel().getSelectedIndex(), ratingChoice.getSelectionModel().getSelectedItem());
-            refreshMovieList(true);
+        if (moviesInCategory.getSelectionModel().getSelectedIndex() != -1 && ratingChoice.getSelectionModel().getSelectedIndex() != -1) {
+            Movie movieToBeRated = null;
+            int movieIndex = 0;
+            for (Movie movie : movieTableView.getItems()) {
+                if (movie.getName().equals(moviesInCategory.getSelectionModel().getSelectedItem().getName())) {
+                    movieToBeRated = movieTableView.getItems().get(movieIndex);
+                    break;
+                }
+                movieIndex++;
+            }
+            if (movieToBeRated != null) {
+                movieModel.updateMovieRating(movieToBeRated, movieIndex, ratingChoice.getSelectionModel().getSelectedItem());
+                refreshMovieList(false);
+            }
         }
     }
 
     @FXML
-    private void search(KeyEvent event) {
+    private void search(KeyEvent event) throws modelException {
         if (searchTextBox.getText() == null || searchTextBox.getText().length() <= 0) { //If there is no value inserted. Set up normal movies
             refreshMovieList(false);
         } else { //Else call method from movie filter by specifying both the movie list and the query
@@ -172,7 +183,7 @@ public class MainWindowController implements Initializable {
     private void removeMovie(ActionEvent event) throws modelException {
         if (moviesInCategory.getSelectionModel().getSelectedIndex() != -1 && categoryTableView.getSelectionModel().getSelectedIndex() != -1) {
             System.out.println(moviesInCategory.getSelectionModel().getSelectedItem().getID());
-            categoryModel.removeMovieFromCategory(categoryTableView.getSelectionModel().getSelectedItem(), moviesInCategory.getSelectionModel().getSelectedItem(), moviesInCategory.getSelectionModel().getFocusedIndex());
+            categoryModel.removeMovieFromCategory(categoryTableView.getSelectionModel().getSelectedItem(), categoryTableView.getSelectionModel().getSelectedIndex(), moviesInCategory.getSelectionModel().getSelectedItem(), moviesInCategory.getSelectionModel().getFocusedIndex());
             refreshCatList();
         }
     }
@@ -180,7 +191,7 @@ public class MainWindowController implements Initializable {
     @FXML
     private void addMovie(ActionEvent event) throws modelException {
         if (categoryTableView.getSelectionModel().getSelectedIndex() != -1 && movieTableView.getSelectionModel().getSelectedIndex() != -1) {
-            categoryModel.addToCategory(categoryTableView.getSelectionModel().getSelectedItem(), movieTableView.getSelectionModel().getSelectedItem());
+            categoryModel.addToCategory(categoryTableView.getSelectionModel().getSelectedItem(), categoryTableView.getSelectionModel().getSelectedIndex(), movieTableView.getSelectionModel().getSelectedItem());
             refreshCatList();
         }
     }
@@ -228,26 +239,33 @@ public class MainWindowController implements Initializable {
         stage.show();
     }
 
-    void refreshMovieList(boolean editing) {
-        observableListMovie = movieModel.getCurrentMovies();
-        movieTableView.setItems(observableListMovie);
+    void refreshMovieList(boolean editing) throws modelException {
+        if (editing) {
+            observableListCategory = categoryModel.getAllCategories();
+            refreshCatList();
+        } else {
+            observableListMovie = movieModel.getCurrentMovies();
+            movieTableView.setItems(observableListMovie);
+        }
     }
 
-    void refreshCategoryList() {
+    void refreshCategoryList() throws modelException {
         observableListCategory = categoryModel.getCurrentCategories();
         categoryTableView.setItems(observableListCategory);
     }
 
     @FXML
     private void displayMoviesInCategory(MouseEvent event) {
-        moviesInCategory.getItems().clear();
-        List<Movie> toBeAddedMovieList = categoryTableView.getSelectionModel().getSelectedItem().getAllMoviesInCategory(); //Gets specific playlist song list
-        for (int x = toBeAddedMovieList.size() - 1; x >= 0; x--) { //counts down from the bottom to top so the last song to be added would play last.
-            moviesInCategory.getItems().add(toBeAddedMovieList.get(x)); //adds the song to the table
+        if (categoryTableView.getSelectionModel().getSelectedIndex() != -1) {
+            moviesInCategory.getItems().clear();
+            List<Movie> toBeAddedMovieList = categoryTableView.getSelectionModel().getSelectedItem().getAllMoviesInCategory(); //Gets specific playlist song list
+            for (int x = toBeAddedMovieList.size() - 1; x >= 0; x--) { //counts down from the bottom to top so the last song to be added would play last.
+                moviesInCategory.getItems().add(toBeAddedMovieList.get(x)); //adds the song to the table
+            }
         }
     }
 
-    private void refreshCatList() {
+    private void refreshCatList() throws modelException {
         moviesInCategory.getItems().clear();
         refreshCategoryList();
         List<Movie> toBeAddedMovieList = categoryTableView.getSelectionModel().getSelectedItem().getAllMoviesInCategory(); //Gets specific playlist song list

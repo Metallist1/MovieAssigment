@@ -9,6 +9,9 @@ import java.io.File;
 import static java.lang.Math.toIntExact;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -50,6 +53,7 @@ public class PopupMovieController implements Initializable {
     private Movie movieToEdit;
     private int movieIndex;
     MainWindowController controller1;
+    private ObservableList<Movie> observableListMovie;
 
     /**
      * Initializes the controller class.
@@ -57,7 +61,11 @@ public class PopupMovieController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         movieModel = MovieModel.getInstance();
-        //observableListMovie = movieModel.getAllMovies(); //Loads all movies
+        try {
+            observableListMovie = movieModel.getCurrentMovies(); //Loads all movies
+        } catch (modelException ex) {
+            Logger.getLogger(PopupMovieController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @FXML
@@ -73,7 +81,6 @@ public class PopupMovieController implements Initializable {
             urlField.setText(selectedFile.getAbsolutePath());
             mediaPlayer = new MediaPlayer(new Media(new File(selectedFile.getAbsolutePath()).toURI().toString())); // Sets up the media object in order to get time of the song
             setMediaPlayerTime(); // Gets time of the movie
-
         }
     }
 
@@ -85,20 +92,46 @@ public class PopupMovieController implements Initializable {
 
     @FXML
     private void saveMovie(ActionEvent event) throws modelException {
+        boolean isFound = false;
         int i = toIntExact(Math.round(mediaPlayer.getMedia().getDuration().toSeconds())); // Rounds up the seconds to an int so it can be inserted into the database
         String name = nameField.getText().trim(); //Eliminates all spaces (front and back. However not in the middle of the string )
         if (name != null && name.length() > 0 && name.length() < 50 && urlField.getText() != null && urlField.getText().length() != 0 && i > 0) { // Checks if the fields are not empty .
-            if (!isEditing) { // If not editing . Creates movie
-                movieModel.createMovie(name, Integer.parseInt(ratingField.getText()), Integer.parseInt(IMDBratingField.getText()), urlField.getText());
-                errorLabel.setText("Success: Successfully created the movie");
-            } else { // If editing. Modifies the movie in database and all categories
-                movieModel.updateMovie(movieToEdit, movieIndex, name, Integer.parseInt(ratingField.getText()), Integer.parseInt(IMDBratingField.getText()), urlField.getText());
-                errorLabel.setText("Success: Successfully updated the movie");
+            for (Movie movie : observableListMovie) {
+                if (movie.getName() == null ? name == null : movie.getName().equals(name)) {
+                    isFound = true;
+                    break;
+                }
+            }
+            if (!isFound) {
+                int userScore;
+                if (ratingField.getText() == null || ratingField.getText().length() <= 0 || ratingField.getText().equals("")) {
+                    userScore = 0;
+                } else if (Integer.parseInt(ratingField.getText()) < 0 || Integer.parseInt(ratingField.getText()) > 10) {
+                    userScore = 0;
+                } else {
+                    userScore = Integer.parseInt(ratingField.getText());
+                }
+                int imdbScore;
+                if (IMDBratingField.getText() == null || IMDBratingField.getText().length() <= 0 || IMDBratingField.getText().equals("")) {
+                    imdbScore = 0;
+                } else if (Integer.parseInt(IMDBratingField.getText()) < 0 || Integer.parseInt(IMDBratingField.getText()) > 10) {
+                    imdbScore = 0;
+                } else {
+                    imdbScore = Integer.parseInt(IMDBratingField.getText());
+                }
+                if (!isEditing) { // If not editing . Creates movie
+                    movieModel.createMovie(name, userScore, imdbScore, urlField.getText());
+                    errorLabel.setText("Success: Successfully created the movie");
+                } else { // If editing. Modifies the movie in database and all categories
+                    movieModel.updateMovie(movieToEdit, movieIndex, name, userScore, imdbScore, urlField.getText());
+                    errorLabel.setText("Success: Successfully updated the movie");
+                }
+            } else {
+                errorLabel.setText("Error: Names should not be the same");
             }
         } else {
             errorLabel.setText("Error: Check if you have inserted a name and selected the correct file");
         }
-
         controller1.refreshMovieList(isEditing); // Refreshes the list in main window to reflect changes
     }
 
@@ -111,7 +144,7 @@ public class PopupMovieController implements Initializable {
             int minutes = Integer.parseInt(averageSeconds) / 60; //Gets minutes
             int seconds = Integer.parseInt(averageSeconds) % 60; // Gets seconds
             if (10 > seconds) { // If the value is under 10 seconds . Prevent from showing 0:x and turn into 0:0X 
-                timeField.setText(minutes + ":0" + seconds);    
+                timeField.setText(minutes + ":0" + seconds);
             } else {
                 timeField.setText(minutes + ":" + seconds);
             }

@@ -44,7 +44,7 @@ public class MovieDAO {
             String sqlStatement = "SELECT * FROM Movie";
             Statement statement = con.createStatement();
             ResultSet rs = statement.executeQuery(sqlStatement);
-            while (rs.next()) { // Creates and adds song objects into an array list
+            while (rs.next()) { // Creates and adds movie objects into an array list
                 Movie mov = new Movie(rs.getString("name"), rs.getInt("userRating"), rs.getInt("imdbRating"), rs.getDate("lastview"), rs.getString("filelink"), rs.getInt("id"));
                 allMovies.add(mov);
             }
@@ -144,10 +144,8 @@ public class MovieDAO {
     }
 
     public Movie updateMovieDate(Movie selectedItem) throws daoException {
-                    java.util.Date utilStartDate = new Date();
-            java.sql.Date date = new java.sql.Date(utilStartDate.getTime());
-            System.out.println(date);
-            System.out.println(selectedItem.getID());
+        java.util.Date utilStartDate = new Date();
+        java.sql.Date date = new java.sql.Date(utilStartDate.getTime());
         try (Connection con = ds.getConnection()) {
             String query = "UPDATE Movie set lastview = ? WHERE id = ?";
             PreparedStatement preparedStmt = con.prepareStatement(query);

@@ -57,7 +57,7 @@ public class MovieModel {
         }
     }
 
-    public ObservableList<Movie> getCurrentMovies() {
+    public ObservableList<Movie> getCurrentMovies() throws modelException{
         return allMovies;
     }
 
